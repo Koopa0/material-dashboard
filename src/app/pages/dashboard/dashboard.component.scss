@@ -1,0 +1,24 @@
+.dashboard-widgets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-auto-rows: 200px;
+  gap: 16px;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 為每個 widget 添加動畫效果 */
+.widget-animate {
+  animation: fadeSlideIn 0.5s ease-out;
+  /* 讓每個 widget 有稍微不同的延遲，創造層疊效果 */
+  animation-fill-mode: both;
+}

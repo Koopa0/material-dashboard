@@ -1,0 +1,63 @@
+<button
+  mat-icon-button
+  class="!absolute top-0 right-0"
+  (click)="showOptions.set(false)"
+>
+  <mat-icon> close </mat-icon>
+</button>
+<div>
+  Width
+
+  <mat-button-toggle-group
+    hideSingleSelectionIndicator="true"
+    [value]="data().columns ?? 1"
+    (change)="
+      dashboardService.updateWidget(data().id, { columns: $event.value })
+    "
+  >
+    <mat-button-toggle [value]="1">1</mat-button-toggle>
+    <mat-button-toggle [value]="2">2</mat-button-toggle>
+    <mat-button-toggle [value]="3">3</mat-button-toggle>
+    <mat-button-toggle [value]="4">4</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
+
+<div>
+  Height
+
+  <mat-button-toggle-group
+    hideSingleSelectionIndicator="true"
+    [value]="data().rows ?? 1"
+    (change)="dashboardService.updateWidget(data().id, { rows: $event.value })"
+  >
+    <mat-button-toggle [value]="1">1</mat-button-toggle>
+    <mat-button-toggle [value]="2">2</mat-button-toggle>
+    <mat-button-toggle [value]="3">3</mat-button-toggle>
+    <mat-button-toggle [value]="4">4</mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
+
+<button
+  mat-icon-button
+  class="!absolute top-1/2 -translate-y-1/2 -right-1"
+  (click)="dashboardService.moveWidgetToRight(data().id)"
+>
+  <mat-icon> chevron_right </mat-icon>
+</button>
+
+<button
+  mat-icon-button
+  class="!absolute top-1/2 -translate-y-1/2 -left-1"
+  (click)="dashboardService.moveWidgetToLeft(data().id)"
+>
+  <mat-icon> chevron_left </mat-icon>
+</button>
+
+<button
+  mat-icon-button
+  class="!absolute top-0 left-0"
+  style="--mdc-icon-button-icon-color: rgb(239 68 68)"
+  (click)="dashboardService.removeWidget(data().id)"
+>
+  <mat-icon> delete </mat-icon>
+</button>

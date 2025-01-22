@@ -1,0 +1,17 @@
+<a
+  mat-list-item
+  [routerLink]="item().route"
+  routerLinkActive="selected-menu-item"
+  #rla="routerLinkActive"
+  [activated]="rla.isActive"
+>
+  <mat-icon
+    [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
+    matListItemIcon
+  >
+    {{ item().icon }}
+  </mat-icon>
+  @if (!collapseDrawer()) {
+    <span matListItemTitle> {{ item().name }} </span>
+  }
+</a>

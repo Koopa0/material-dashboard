@@ -1,0 +1,33 @@
+<div class="flex justify-between item-center mb-4">
+  <h1 class="text-2xl">Dashboard</h1>
+  <button
+    mat-raised-button
+    [matMenuTriggerFor]="widgetMenu"
+    [disabled]="this.widgetProvider.widgetsToAdd().length === 0"
+  >
+    <mat-icon>add_circle</mat-icon>
+    Add widget
+  </button>
+  <mat-menu #widgetMenu="matMenu">
+    @for (widget of this.widgetProvider.widgetsToAdd(); track widget.id) {
+      <button mat-menu-item (click)="this.widgetProvider.addWidget(widget)">
+        {{ widget.name }}
+      </button>
+    } @empty {
+      <button mat-menu-item>no more widgets</button>
+    }
+  </mat-menu>
+</div>
+<div
+  #dashboard
+  class="dashboard-widgets"
+  [@staggerAnimation]="this.widgetProvider.widgets().length"
+>
+  @for (
+    widget of this.widgetProvider.addedWidgets();
+    track widget.id;
+    let i = $index
+  ) {
+    <app-widget [data]="widget" class="widget-animate" />
+  }
+</div>

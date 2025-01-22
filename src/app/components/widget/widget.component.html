@@ -1,0 +1,19 @@
+<div
+  class="h-full w-full p-7 relative mat-elevation-z3 overflow-hidden box-border rounded-[inherit]"
+  [style.background-color]="data().backgroundColor ?? 'white'"
+  [style.color]="data().color ?? 'inherit'"
+>
+  <h3 class="m-0">{{ data().name }}</h3>
+  <button
+    mat-icon-button
+    class="!absolute top-5 right-5"
+    (click)="showOptions.set(true)"
+    [style.--mdc-icon-button-icon-color]="data().color ?? 'inherit'"
+  >
+    <mat-icon>settings</mat-icon>
+  </button>
+  <ng-container [ngComponentOutlet]="data().content" />
+  @if (showOptions()) {
+    <app-options [(showOptions)]="showOptions" [data]="data()" />
+  }
+</div>

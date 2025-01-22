@@ -1,0 +1,6 @@
+<app-sidenav-header [collapseDrawer]="collapseDrawer()" />
+<mat-nav-list class="[--mat-list-active-indicator-shape:0px] mb-6">
+  @for (item of menuItems(); track item.name) {
+    <app-menu-item [item]="item" [collapseDrawer]="collapseDrawer()" />
+  }
+</mat-nav-list>

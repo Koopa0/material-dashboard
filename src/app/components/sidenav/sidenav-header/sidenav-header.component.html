@@ -1,0 +1,17 @@
+<div class="pt-6 flex flex-col items-center">
+  <img
+    class="object-cover object-center rounded-full mb-3 aspect-square"
+    [width]="profilePicSize()"
+    [height]="profilePicSize()"
+    [src]="'KoopaJr.png'"
+    alt="User Profile Picture"
+  />
+  <div
+    class="text-center mb-2 h-[3rem] {{
+      collapseDrawer() ? '!h-0 opacity-0' : ''
+    }}"
+  >
+    <h2>Your Channel</h2>
+    <p>Koopa Jr</p>
+  </div>
+</div>

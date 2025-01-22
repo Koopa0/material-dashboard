@@ -1,1 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
+@use "./app/styles/material.scss";
+
+@use "./app/styles/colors.scss";
+
+@use "./app/styles/tailwind.scss";
+
+@use "./app/styles/custom.scss";
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
