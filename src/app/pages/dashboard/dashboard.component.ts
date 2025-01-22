@@ -9,7 +9,6 @@ import {
   MatMenuModule,
   MatMenuTrigger,
 } from '@angular/material/menu';
-import { wrapGrid } from 'animate-css-grid';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,9 +27,9 @@ import { wrapGrid } from 'animate-css-grid';
 export class DashboardComponent {
   widgetProvider = inject(DashboardService);
 
-  dashboard = viewChild.required<ElementRef<HTMLDivElement>>('dashboard');
-
-  ngOnInit() {
-    wrapGrid(this.dashboard().nativeElement, { duration: 300 });
-  }
+  // dashboard = viewChild.required<ElementRef<HTMLDivElement>>('dashboard');
+  //
+  // ngOnInit() {
+  //   wrapGrid(this.dashboard().nativeElement, { duration: 300 });
+  // }
 }
