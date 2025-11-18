@@ -1,5 +1,5 @@
 # Wrangler 配置文件
-# 用於 Cloudflare Pages 部署和本地開發
+# 用於 Cloudflare Pages 部署和本地開發（CSR 模式）
 
 # Pages 專案名稱
 name = "material-dashboard"
@@ -7,14 +7,14 @@ name = "material-dashboard"
 # 相容性日期
 compatibility_date = "2025-01-21"
 
-# 相容性標誌
-# nodejs_compat: 啟用 Node.js 相容層，支援 node:module 等內建模組
-# 這對於 Angular SSR 是必需的
-compatibility_flags = ["nodejs_compat"]
-
 # Pages 配置
 pages_build_output_dir = "dist/cloudflare"
 
 # 環境變數（可選）
 [vars]
 # 在這裡添加環境變數
+
+# 注意：
+# 此專案使用客戶端渲染（CSR）模式部署到 Cloudflare Pages
+# Angular v20 的 SSR 模式因 Node.js API 相容性問題暫不支援 Cloudflare Workers
+# 如需 SSR，建議部署到支援完整 Node.js 的平台（如 Vercel、Netlify）

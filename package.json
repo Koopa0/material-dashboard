@@ -3,13 +3,15 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "npm run build && wrangler pages dev dist/cloudflare",
-    "build": "ng build && npm run process",
+    "start": "ng serve",
+    "start:ssr": "ng serve",
+    "build": "ng build",
+    "build:cloudflare": "ng build --configuration production && node ./tools/copy-cloudflare-csr.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:material-dashboard": "node dist/material-dashboard/server/server.mjs",
-    "process": "node ./tools/copy-files.mjs",
-    "deploy": "npm run build && wrangler pages deploy dist/cloudflare"
+    "serve:ssr": "node dist/server/server.mjs",
+    "preview:cloudflare": "npm run build:cloudflare && wrangler pages dev dist/cloudflare",
+    "deploy": "npm run build:cloudflare && wrangler pages deploy dist/cloudflare"
   },
   "private": true,
   "dependencies": {
