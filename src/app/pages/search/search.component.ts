@@ -42,14 +42,25 @@ export class SearchComponent implements OnInit {
   /** 搜尋查詢文字 */
   searchQuery = signal<string>('');
 
-  /** 搜尋開始時間（用於計算延遲） */
-  private searchStartTime = signal<number>(0);
+  /** 搜尋延遲時間（毫秒） */
+  searchLatency = signal<number>(0);
 
   constructor() {
-    // 監聽搜尋查詢變化
+    // 監聽搜尋查詢變化並計算搜尋延遲
     effect(() => {
       const query = this.searchQuery();
       console.log('🔍 搜尋查詢變更:', query);
+
+      // 在 effect 中計算搜尋延遲（而非在 computed 中）
+      if (query.trim()) {
+        const startTime = performance.now();
+        // 觸發 searchResults computed 重新計算
+        const results = this.searchResults();
+        const endTime = performance.now();
+        this.searchLatency.set(Math.round(endTime - startTime));
+      } else {
+        this.searchLatency.set(0);
+      }
     });
   }
 
@@ -71,7 +82,6 @@ export class SearchComponent implements OnInit {
     }
 
     console.log('🔍 搜尋關鍵字:', query);
-    const startTime = performance.now();
     const allDocs = this.knowledgeBase.documents();
     console.log('📚 可搜尋文檔總數:', allDocs.length);
 
@@ -85,9 +95,6 @@ export class SearchComponent implements OnInit {
       .sort((a, b) => b.relevanceScore - a.relevanceScore)
       .slice(0, 50); // 限制最多 50 個結果
 
-    const endTime = performance.now();
-    this.searchLatency.set(Math.round(endTime - startTime));
-
     console.log('✅ 找到結果:', results.length, '筆');
     if (results.length > 0) {
       console.log('📄 前 3 筆結果:', results.slice(0, 3).map(r => ({
@@ -98,9 +105,6 @@ export class SearchComponent implements OnInit {
 
     return results;
   });
-
-  /** 搜尋延遲時間（毫秒） */
-  searchLatency = signal<number>(0);
 
   /** 是否顯示結果 */
   showResults = computed(() => {
