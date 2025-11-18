@@ -9,6 +9,11 @@
   border-bottom: 1px solid var(--color-border);
   transition: all var(--transition-base) ease;
 
+  // 漢堡圖示顏色
+  button {
+    color: var(--color-on-surface);
+  }
+
   .toolbar-title {
     font-size: 20px;
     font-weight: 600;
@@ -112,9 +117,14 @@ mat-sidenav {
   }
 
   // Chip 主題適配
-  mat-chip {
+  mat-chip,
+  .mat-mdc-chip {
     background: var(--color-surface-variant) !important;
     color: var(--color-on-surface) !important;
+
+    .mdc-evolution-chip__text-label {
+      color: var(--color-on-surface) !important;
+    }
   }
 
   // Table 主題適配
