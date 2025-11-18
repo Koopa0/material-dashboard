@@ -48,6 +48,40 @@ mat-sidenav {
   border-right: 1px solid var(--color-border);
   transition: background-color var(--transition-base) ease,
               border-color var(--transition-base) ease;
+
+  // 修復側邊欄菜單項文字顏色
+  ::ng-deep {
+    .mat-mdc-list-item {
+      color: var(--color-on-surface) !important;
+
+      .mat-mdc-list-item-title {
+        color: var(--color-on-surface) !important;
+      }
+
+      .mat-icon {
+        color: var(--color-on-surface) !important;
+      }
+
+      // 選中狀態
+      &.selected-menu-item {
+        color: var(--color-accent) !important;
+
+        .mat-mdc-list-item-title {
+          color: var(--color-accent) !important;
+          font-weight: 600;
+        }
+
+        .mat-icon {
+          color: var(--color-accent) !important;
+        }
+      }
+
+      // Hover 狀態
+      &:hover:not(.selected-menu-item) {
+        background-color: var(--color-surface-hover) !important;
+      }
+    }
+  }
 }
 
 // Material Card 主題適配
