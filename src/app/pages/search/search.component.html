@@ -1,0 +1,73 @@
+<div class="search-page">
+  <h1>知識庫搜尋</h1>
+
+  <!-- 搜尋列 -->
+  <mat-card class="search-card">
+    <mat-card-content>
+      <div class="search-container">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>搜尋文檔</mat-label>
+          <input
+            matInput
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="onSearch()"
+            placeholder="例如：Angular Signals、Rust 所有權、Gemini API..."
+          />
+          <mat-icon matPrefix>search</mat-icon>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="onSearch()"
+          [disabled]="!searchQuery()"
+        >
+          搜尋
+        </button>
+
+        <button mat-button (click)="onClear()">清除</button>
+      </div>
+
+      @if (searchLatency() > 0) {
+        <p class="search-info">
+          找到 {{ searchResults().length }} 個結果（{{ searchLatency() }}ms）
+        </p>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <!-- 搜尋結果 -->
+  <div class="results-container">
+    @if (isSearching()) {
+      <mat-card class="loading-card">
+        <mat-card-content>
+          <p>搜尋中...</p>
+        </mat-card-content>
+      </mat-card>
+    } @else if (searchResults().length > 0) {
+      @for (doc of searchResults(); track doc.id) {
+        <mat-card class="result-card" (click)="viewDocument(doc)">
+          <mat-card-header>
+            <mat-card-title>{{ doc.title }}</mat-card-title>
+            <mat-card-subtitle>
+              {{ doc.category }} • {{ doc.author }} • {{
+                doc.updatedAt | date: 'yyyy-MM-dd'
+              }}
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{ doc.summary }}</p>
+            <div class="tags">
+              @for (tag of doc.tags; track tag) {
+                <mat-chip>{{ tag }}</mat-chip>
+              }
+            </div>
+            @if (doc.relevanceScore) {
+              <p class="relevance">相關度: {{ doc.relevanceScore }}%</p>
+            }
+          </mat-card-content>
+        </mat-card>
+      }
+    }
+  </div>
+</div>

@@ -1,33 +1,113 @@
-<div class="flex justify-between item-center mb-4">
-  <h1 class="text-2xl">Dashboard</h1>
-  <button
-    mat-raised-button
-    [matMenuTriggerFor]="widgetMenu"
-    [disabled]="this.widgetProvider.widgetsToAdd().length === 0"
-  >
-    <mat-icon>add_circle</mat-icon>
-    Add widget
-  </button>
-  <mat-menu #widgetMenu="matMenu">
-    @for (widget of this.widgetProvider.widgetsToAdd(); track widget.id) {
-      <button mat-menu-item (click)="this.widgetProvider.addWidget(widget)">
-        {{ widget.name }}
-      </button>
-    } @empty {
-      <button mat-menu-item>no more widgets</button>
-    }
-  </mat-menu>
-</div>
-<div
-  #dashboard
-  class="dashboard-widgets"
-  [@staggerAnimation]="this.widgetProvider.widgets().length"
->
-  @for (
-    widget of this.widgetProvider.addedWidgets();
-    track widget.id;
-    let i = $index
-  ) {
-    <app-widget [data]="widget" class="widget-animate" />
-  }
+<div class="dashboard-page">
+  <h1>知識庫總覽</h1>
+
+  <!-- 統計卡片 -->
+  <div class="stats-grid">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <mat-icon class="stat-icon" color="primary">description</mat-icon>
+          <div class="stat-info">
+            <h2>{{ stats().totalDocuments }}</h2>
+            <p>總文檔數</p>
+            @if (stats().documentsAddedToday > 0) {
+              <span class="stat-change">今日 +{{ stats().documentsAddedToday }}</span>
+            }
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <mat-icon class="stat-icon" color="accent">visibility</mat-icon>
+          <div class="stat-info">
+            <h2>{{ stats().totalViews }}</h2>
+            <p>總檢視次數</p>
+            <span class="stat-change">本週 {{ stats().viewsThisWeek }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <mat-icon class="stat-icon" style="color: #4caf50">search</mat-icon>
+          <div class="stat-info">
+            <h2>{{ stats().totalQueries }}</h2>
+            <p>總查詢次數</p>
+            <span class="stat-change">今日 {{ stats().queriesToday }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-content">
+          <mat-icon class="stat-icon" style="color: #ff9800">speed</mat-icon>
+          <div class="stat-info">
+            <h2>{{ stats().avgQueryLatency }}ms</h2>
+            <p>平均查詢延遲</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- 分類統計 -->
+  <mat-card class="category-stats">
+    <mat-card-header>
+      <mat-card-title>文檔分類分布</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="category-list">
+        @for (cat of categoryStats(); track cat.category) {
+          <div class="category-item">
+            <div class="category-info">
+              <span class="category-name">{{ cat.category }}</span>
+              <span class="category-count">{{ cat.documentCount }} 篇</span>
+            </div>
+            <div class="category-bar">
+              <div
+                class="category-bar-fill"
+                [style.width.%]="cat.percentage"
+                [style.background-color]="cat.color"
+              ></div>
+            </div>
+            <span class="category-percentage">{{ cat.percentage | number: '1.1-1' }}%</span>
+          </div>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- 查詢統計 -->
+  <mat-card class="query-stats">
+    <mat-card-header>
+      <mat-card-title>查詢統計</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="query-stats-grid">
+        <div class="query-stat-item">
+          <h3>{{ queryStats().total }}</h3>
+          <p>總查詢數</p>
+        </div>
+        <div class="query-stat-item">
+          <h3>{{ queryStats().successRate | number: '1.1-1' }}%</h3>
+          <p>成功率</p>
+        </div>
+        <div class="query-stat-item">
+          <h3>{{ queryStats().avgLatency | number: '1.0-0' }}ms</h3>
+          <p>平均延遲</p>
+        </div>
+        <div class="query-stat-item">
+          <h3>{{ queryStats().maxLatency }}ms</h3>
+          <p>最大延遲</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>
