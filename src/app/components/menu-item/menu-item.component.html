@@ -1,3 +1,4 @@
+<!-- 選單項目連結 -->
 <a
   mat-list-item
   [routerLink]="item().route"
@@ -5,13 +6,16 @@
   #rla="routerLinkActive"
   [activated]="rla.isActive"
 >
+  <!-- 圖示：啟用時顯示實心圖示，未啟用時顯示空心圖示 -->
   <mat-icon
     [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
     matListItemIcon
   >
     {{ item().icon }}
   </mat-icon>
+
+  <!-- 標籤文字：側邊欄展開時才顯示 -->
   @if (!collapseDrawer()) {
-    <span matListItemTitle> {{ item().name }} </span>
+    <span matListItemTitle>{{ item().label }}</span>
   }
 </a>

@@ -1,0 +1,109 @@
+/**
+ * RAG 知識庫 - 文檔模型
+ *
+ * 此檔案定義了知識庫中文檔的資料結構
+ * 用於表示技術文檔、教學文章等內容
+ */
+
+/**
+ * 技術分類枚舉
+ * 定義支援的技術類型
+ */
+export enum TechnologyCategory {
+  GOLANG = 'Golang',
+  RUST = 'Rust',
+  FLUTTER = 'Flutter',
+  ANGULAR = 'Angular',
+  AI = 'AI',
+  GEMINI = 'Gemini',
+  SYSTEM_DESIGN = 'System Design',
+  POSTGRES = 'PostgreSQL',
+}
+
+/**
+ * 文檔狀態枚舉
+ * 表示文檔在知識庫中的狀態
+ */
+export enum DocumentStatus {
+  ACTIVE = 'active',       // 啟用中
+  ARCHIVED = 'archived',   // 已封存
+  DRAFT = 'draft',         // 草稿
+  PROCESSING = 'processing' // 處理中（向量化）
+}
+
+/**
+ * 文檔介面
+ * 代表知識庫中的一份技術文檔
+ */
+export interface Document {
+  /** 文檔唯一識別碼 */
+  id: string;
+
+  /** 文檔標題 */
+  title: string;
+
+  /** 文檔內容 */
+  content: string;
+
+  /** 文檔摘要 */
+  summary: string;
+
+  /** 技術分類 */
+  category: TechnologyCategory;
+
+  /** 標籤列表 */
+  tags: string[];
+
+  /** 向量嵌入 ID（關聯到 Embedding） */
+  embeddingId?: string;
+
+  /** 文檔狀態 */
+  status: DocumentStatus;
+
+  /** 建立時間 */
+  createdAt: Date;
+
+  /** 最後更新時間 */
+  updatedAt: Date;
+
+  /** 作者 */
+  author: string;
+
+  /** 檢視次數 */
+  viewCount: number;
+
+  /** 相關性分數（搜尋時使用） */
+  relevanceScore?: number;
+
+  /** 文檔大小（字元數） */
+  size: number;
+
+  /** 語言 */
+  language: 'zh-TW' | 'en' | 'ja';
+}
+
+/**
+ * 文檔建立請求介面
+ * 用於建立新文檔時的資料傳遞
+ */
+export interface CreateDocumentRequest {
+  title: string;
+  content: string;
+  category: TechnologyCategory;
+  tags: string[];
+  author: string;
+  language?: 'zh-TW' | 'en' | 'ja';
+}
+
+/**
+ * 文檔更新請求介面
+ * 用於更新現有文檔
+ */
+export interface UpdateDocumentRequest {
+  id: string;
+  title?: string;
+  content?: string;
+  category?: TechnologyCategory;
+  tags?: string[];
+  status?: DocumentStatus;
+}
