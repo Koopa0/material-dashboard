@@ -1,17 +1,15 @@
 <!-- AI 聊天按鈕 -->
-<button
-  class="chat-fab"
-  mat-fab
-  color="primary"
-  (click)="toggleChat()"
-  [attr.aria-label]="isExpanded() ? '關閉 AI 助手' : '開啟 AI 助手'"
->
-  @if (isExpanded()) {
-    <mat-icon>close</mat-icon>
-  } @else {
+@if (!isExpanded()) {
+  <button
+    class="chat-fab"
+    mat-fab
+    color="primary"
+    (click)="toggleChat()"
+    aria-label="開啟 AI 助手"
+  >
     <mat-icon>smart_toy</mat-icon>
-  }
-</button>
+  </button>
+}
 
 <!-- 聊天窗口 -->
 @if (isExpanded()) {
@@ -33,9 +31,14 @@
           </p>
         </div>
       </div>
-      <button mat-icon-button (click)="clearChat()" matTooltip="清除對話">
-        <mat-icon>delete_outline</mat-icon>
-      </button>
+      <div class="header-actions">
+        <button mat-icon-button (click)="clearChat()" matTooltip="清除對話">
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+        <button mat-icon-button (click)="toggleChat()" matTooltip="關閉" aria-label="關閉 AI 助手">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
     </div>
 
     <!-- 訊息區域 -->
