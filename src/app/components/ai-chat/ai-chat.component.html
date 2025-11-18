@@ -1,0 +1,132 @@
+<!-- AI 聊天按鈕 -->
+<button
+  class="chat-fab"
+  mat-fab
+  color="primary"
+  (click)="toggleChat()"
+  [attr.aria-label]="isExpanded() ? '關閉 AI 助手' : '開啟 AI 助手'"
+>
+  @if (isExpanded()) {
+    <mat-icon>close</mat-icon>
+  } @else {
+    <mat-icon>smart_toy</mat-icon>
+  }
+</button>
+
+<!-- 聊天窗口 -->
+@if (isExpanded()) {
+  <div class="chat-window" [@slideIn]>
+    <!-- 標題列 -->
+    <div class="chat-header">
+      <div class="header-content">
+        <mat-icon class="ai-icon">auto_awesome</mat-icon>
+        <div>
+          <h3>AI 知識庫助手</h3>
+          <p class="subtitle">
+            @if (isEnabled()) {
+              <span class="status-dot online"></span>
+              已就緒
+            } @else {
+              <span class="status-dot offline"></span>
+              Demo 模式
+            }
+          </p>
+        </div>
+      </div>
+      <button mat-icon-button (click)="clearChat()" matTooltip="清除對話">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    </div>
+
+    <!-- 訊息區域 -->
+    <div class="chat-messages">
+      @if (chatHistory().length === 0) {
+        <!-- 歡迎訊息 -->
+        <div class="welcome-message">
+          <mat-icon class="welcome-icon">waving_hand</mat-icon>
+          <h4>歡迎使用 AI 助手！</h4>
+          <p>我可以回答關於知識庫的問題，提供技術建議與學習指引。</p>
+
+          <!-- 快速問題 -->
+          <div class="quick-questions">
+            <p class="quick-title">試試看這些問題：</p>
+            @for (question of quickQuestions; track question) {
+              <button
+                class="quick-question-btn"
+                mat-stroked-button
+                (click)="useQuickQuestion(question)"
+              >
+                {{ question }}
+              </button>
+            }
+          </div>
+        </div>
+      } @else {
+        <!-- 聊天記錄 -->
+        @for (message of chatHistory(); track message.id) {
+          <div class="message" [class.user-message]="message.role === 'user'" [class.ai-message]="message.role === 'assistant'">
+            <div class="message-avatar">
+              @if (message.role === 'user') {
+                <mat-icon>person</mat-icon>
+              } @else {
+                <mat-icon>smart_toy</mat-icon>
+              }
+            </div>
+            <div class="message-content">
+              <div class="message-text">{{ message.content }}</div>
+              <div class="message-time">
+                {{ message.timestamp | date: 'HH:mm' }}
+              </div>
+            </div>
+          </div>
+        }
+      }
+
+      <!-- 載入中指示器 -->
+      @if (isProcessing()) {
+        <div class="message ai-message typing-indicator">
+          <div class="message-avatar">
+            <mat-icon>smart_toy</mat-icon>
+          </div>
+          <div class="message-content">
+            <div class="typing-animation">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- 輸入區域 -->
+    <div class="chat-input">
+      <mat-form-field appearance="outline" class="input-field">
+        <textarea
+          matInput
+          [ngModel]="userInput()"
+          (ngModelChange)="userInput.set($event)"
+          (keydown)="onKeyDown($event)"
+          placeholder="輸入您的問題..."
+          rows="1"
+          [disabled]="isProcessing()"
+        ></textarea>
+      </mat-form-field>
+      <button
+        mat-fab
+        color="primary"
+        class="send-button"
+        (click)="sendMessage()"
+        [disabled]="!userInput().trim() || isProcessing()"
+      >
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+
+    <!-- 底部提示 -->
+    <div class="chat-footer">
+      <mat-icon class="info-icon">info</mat-icon>
+      <span>AI 回應僅供參考，請以官方文檔為準</span>
+    </div>
+  </div>
+}

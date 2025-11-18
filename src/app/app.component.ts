@@ -6,6 +6,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { MatButtonModule } from '@angular/material/button';
 import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
+import { AIChatComponent } from './components/ai-chat/ai-chat.component';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.com
     SidenavComponent,
     MatToolbar,
     ThemeToggleComponent,
+    AIChatComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
