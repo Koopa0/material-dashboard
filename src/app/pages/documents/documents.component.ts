@@ -42,7 +42,7 @@ export class DocumentsComponent {
   displayedColumns: string[] = [
     'title',
     'category',
-    'author',
+    'source',
     'tags',
     'viewCount',
     'updatedAt',

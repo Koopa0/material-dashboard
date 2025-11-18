@@ -53,10 +53,31 @@
         </td>
       </ng-container>
 
-      <!-- 作者欄位 -->
-      <ng-container matColumnDef="author">
-        <th mat-header-cell *matHeaderCellDef>作者</th>
-        <td mat-cell *matCellDef="let doc">{{ doc.author }}</td>
+      <!-- 來源欄位 -->
+      <ng-container matColumnDef="source">
+        <th mat-header-cell *matHeaderCellDef>來源</th>
+        <td mat-cell *matCellDef="let doc">
+          <div class="source-cell">
+            @if (doc.source === 'GitHub') {
+              <mat-icon class="source-icon">code</mat-icon>
+            } @else if (doc.source === 'Notion') {
+              <mat-icon class="source-icon">description</mat-icon>
+            } @else if (doc.source === 'Google Docs') {
+              <mat-icon class="source-icon">article</mat-icon>
+            } @else if (doc.source === 'Web Article') {
+              <mat-icon class="source-icon">language</mat-icon>
+            } @else if (doc.source === 'Obsidian') {
+              <mat-icon class="source-icon">notes</mat-icon>
+            } @else if (doc.source === 'Markdown File') {
+              <mat-icon class="source-icon">text_snippet</mat-icon>
+            } @else if (doc.source === 'PDF') {
+              <mat-icon class="source-icon">picture_as_pdf</mat-icon>
+            } @else {
+              <mat-icon class="source-icon">edit</mat-icon>
+            }
+            <span>{{ doc.source }}</span>
+          </div>
+        </td>
       </ng-container>
 
       <!-- 標籤欄位 -->
