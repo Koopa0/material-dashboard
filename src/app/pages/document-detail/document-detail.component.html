@@ -1,0 +1,148 @@
+<div class="document-detail-page">
+  @if (document(); as doc) {
+    <!-- 頂部操作欄 -->
+    <div class="document-header">
+      <button mat-icon-button class="back-button" (click)="goBack()" matTooltip="返回">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
+      <div class="header-spacer"></div>
+
+      <div class="document-actions">
+        <button
+          mat-icon-button
+          class="action-button"
+          [class.active]="isPinned()"
+          (click)="togglePin()"
+          [matTooltip]="isPinned() ? '取消釘選' : '釘選文檔'"
+        >
+          <mat-icon>{{ isPinned() ? 'push_pin' : 'push_pin' }}</mat-icon>
+        </button>
+
+        <button
+          mat-icon-button
+          class="action-button"
+          [class.active]="isFavorited()"
+          (click)="toggleFavorite()"
+          [matTooltip]="isFavorited() ? '取消收藏' : '收藏文檔'"
+        >
+          <mat-icon>{{ isFavorited() ? 'favorite' : 'favorite_border' }}</mat-icon>
+        </button>
+
+        <button
+          mat-icon-button
+          class="action-button"
+          (click)="shareDocument()"
+          matTooltip="分享文檔"
+        >
+          <mat-icon>share</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- 文檔主體 -->
+    <div class="document-body">
+      <!-- 文檔標題 -->
+      <div class="document-title-section">
+        <h1 class="document-title">{{ doc.title }}</h1>
+
+        <!-- 文檔元數據 -->
+        <div class="document-metadata">
+          <div class="metadata-item">
+            <mat-icon>folder</mat-icon>
+            <span>{{ doc.category }}</span>
+          </div>
+
+          <div class="metadata-item">
+            <mat-icon>visibility</mat-icon>
+            <span>{{ doc.viewCount }} 次查看</span>
+          </div>
+
+          <div class="metadata-item">
+            <mat-icon>schedule</mat-icon>
+            <span>{{ formatDate(doc.updatedAt) }}</span>
+          </div>
+
+          @if (doc.size) {
+            <div class="metadata-item">
+              <mat-icon>description</mat-icon>
+              <span>{{ (doc.size / 1024).toFixed(1) }} KB</span>
+            </div>
+          }
+
+          @if (doc.language) {
+            <div class="metadata-item">
+              <mat-icon>translate</mat-icon>
+              <span>{{ doc.language }}</span>
+            </div>
+          }
+        </div>
+
+        <!-- 標籤 -->
+        @if (doc.tags.length > 0) {
+          <div class="document-tags">
+            <mat-chip-set>
+              @for (tag of doc.tags; track tag) {
+                <mat-chip class="tag-chip">
+                  <mat-icon matChipAvatar>label</mat-icon>
+                  {{ tag }}
+                </mat-chip>
+              }
+            </mat-chip-set>
+          </div>
+        }
+      </div>
+
+      <!-- 文檔內容 -->
+      <mat-card class="document-content-card gemini-card">
+        <mat-card-content>
+          <div class="document-content" [innerHTML]="formatContent(doc.content)"></div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- 相關文檔 -->
+      @if (relatedDocuments().length > 0) {
+        <div class="related-documents-section">
+          <h2 class="section-title">
+            <mat-icon>link</mat-icon>
+            相關文檔
+          </h2>
+
+          <div class="related-documents-grid">
+            @for (relatedDoc of relatedDocuments(); track relatedDoc.id) {
+              <mat-card class="related-document-card gemini-card" (click)="viewRelatedDocument(relatedDoc)">
+                <mat-card-content>
+                  <div class="related-doc-icon">
+                    <mat-icon>description</mat-icon>
+                  </div>
+                  <div class="related-doc-info">
+                    <h4>{{ relatedDoc.title }}</h4>
+                    <p>{{ relatedDoc.category }}</p>
+                    <div class="related-doc-meta">
+                      <span>
+                        <mat-icon>visibility</mat-icon>
+                        {{ relatedDoc.viewCount }}
+                      </span>
+                    </div>
+                  </div>
+                  <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <!-- 文檔不存在 -->
+    <div class="document-not-found">
+      <mat-icon>description_off</mat-icon>
+      <h2>找不到文檔</h2>
+      <p>該文檔可能已被刪除或不存在</p>
+      <button mat-raised-button color="primary" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        返回文檔列表
+      </button>
+    </div>
+  }
+</div>

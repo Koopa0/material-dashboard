@@ -6,6 +6,7 @@
  */
 import { Component, inject, computed, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -45,6 +46,9 @@ export class DocumentsComponent implements AfterViewInit {
   /** 知識庫服務 */
   knowledgeBase = inject(KnowledgeBaseService);
 
+  /** 路由器 */
+  private router = inject(Router);
+
   /** 表格顯示的欄位 */
   displayedColumns: string[] = [
     'pin',
@@ -82,7 +86,7 @@ export class DocumentsComponent implements AfterViewInit {
   viewDocument(doc: Document): void {
     this.knowledgeBase.selectedDocument.set(doc);
     this.knowledgeBase.recordView(doc.id);
-    console.log('Selected document:', doc);
+    this.router.navigate(['/documents', doc.id]);
   }
 
   /**

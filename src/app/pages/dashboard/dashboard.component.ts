@@ -6,6 +6,7 @@
  */
 import { Component, inject, computed, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -22,6 +23,9 @@ import { Document } from '../../models/document.model';
 export class DashboardComponent implements OnInit {
   /** 知識庫服務 */
   knowledgeBase = inject(KnowledgeBaseService);
+
+  /** 路由器 */
+  private router = inject(Router);
 
   /** 統計資料 */
   stats = computed(() => this.knowledgeBase.stats());
@@ -70,6 +74,6 @@ export class DashboardComponent implements OnInit {
     console.log('👁️ 點擊查看文檔:', doc.title);
     this.knowledgeBase.recordView(doc.id);
     this.knowledgeBase.selectedDocument.set(doc);
-    // TODO: 開啟文檔詳情面板
+    this.router.navigate(['/documents', doc.id]);
   }
 }

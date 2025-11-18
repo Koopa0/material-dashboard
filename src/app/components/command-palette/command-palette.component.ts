@@ -318,9 +318,7 @@ export class CommandPaletteComponent {
   /** 開啟文檔 */
   private openDocument(doc: Document): void {
     this.knowledgeBase.recordView(doc.id);
-    // TODO: 實現文檔查看功能
-    console.log('開啟文檔:', doc.title);
-    this.router.navigate(['/documents']);
+    this.router.navigate(['/documents', doc.id]);
   }
 
   /** 格式化日期 */
