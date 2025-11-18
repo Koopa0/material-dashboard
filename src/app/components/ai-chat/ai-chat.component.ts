@@ -12,8 +12,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AIService, ChatMessage } from '../../services/ai.service';
 import { KnowledgeBaseService } from '../../services/knowledge-base.service';
+import { CitationComponent } from '../citation/citation';
 
 @Component({
   selector: 'app-ai-chat',
@@ -26,6 +29,9 @@ import { KnowledgeBaseService } from '../../services/knowledge-base.service';
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    MatDividerModule,
+    MatTooltipModule,
+    CitationComponent,
   ],
   templateUrl: './ai-chat.component.html',
   styleUrl: './ai-chat.component.scss',

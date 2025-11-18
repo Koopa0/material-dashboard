@@ -7,12 +7,13 @@
  * - 使用 afterNextRender 處理 DOM 操作（Chart.js 初始化）
  * - 使用 inject() 進行依賴注入
  */
-import { Component, computed, inject, afterNextRender, ElementRef, viewChild } from '@angular/core';
+import { Component, computed, inject, afterNextRender, ElementRef, viewChild, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { KnowledgeBaseService } from '../../services/knowledge-base.service';
 import { TechnologyCategory } from '../../models/document.model';
+import { ThemeService } from '../../services/theme.service';
 
 // 註冊 Chart.js 所有模組
 Chart.register(...registerables);
@@ -33,9 +34,25 @@ export class AnalyticsComponent {
   private knowledgeBase = inject(KnowledgeBaseService);
 
   /**
+   * 主題服務
+   */
+  private themeService = inject(ThemeService);
+
+  /**
    * Chart.js 實例
    */
   private charts: { [key: string]: Chart } = {};
+
+  /**
+   * 取得主題相關顏色（用於圖表）
+   */
+  private chartColors = computed(() => {
+    const colors = this.themeService.getThemeColors();
+    return {
+      textColor: colors.onSurface,
+      gridColor: colors.border,
+    };
+  });
 
   /**
    * Canvas 元素引用（使用 viewChild Signal API）
@@ -193,6 +210,20 @@ export class AnalyticsComponent {
     afterNextRender(() => {
       this.initializeCharts();
     });
+
+    /**
+     * 監聽主題變化並重新渲染圖表
+     */
+    effect(() => {
+      // 觸發 chartColors computed signal 以偵測主題變化
+      this.chartColors();
+
+      // 如果圖表已初始化，則重新渲染
+      if (Object.keys(this.charts).length > 0) {
+        this.destroyCharts();
+        this.initializeCharts();
+      }
+    });
   }
 
   /**
@@ -206,6 +237,14 @@ export class AnalyticsComponent {
   }
 
   /**
+   * 銷毀所有圖表
+   */
+  private destroyCharts(): void {
+    Object.values(this.charts).forEach(chart => chart.destroy());
+    this.charts = {};
+  }
+
+  /**
    * 初始化類別分佈圓餅圖
    */
   private initializeCategoryChart(): void {
@@ -214,6 +253,8 @@ export class AnalyticsComponent {
 
     const ctx = canvas.nativeElement.getContext('2d');
     if (!ctx) return;
+
+    const colors = this.chartColors();
 
     const config: ChartConfiguration = {
       type: 'pie',
@@ -226,14 +267,16 @@ export class AnalyticsComponent {
             position: 'bottom',
             labels: {
               font: { size: 12 },
-              padding: 15
+              padding: 15,
+              color: colors.textColor
             }
           },
           title: {
             display: true,
             text: '文檔類別分佈',
             font: { size: 16, weight: 'bold' },
-            padding: 20
+            padding: 20,
+            color: colors.textColor
           }
         }
       }
@@ -252,6 +295,8 @@ export class AnalyticsComponent {
     const ctx = canvas.nativeElement.getContext('2d');
     if (!ctx) return;
 
+    const colors = this.chartColors();
+
     const config: ChartConfiguration = {
       type: 'line',
       data: this.queryTrendData(),
@@ -266,14 +311,27 @@ export class AnalyticsComponent {
             display: true,
             text: '查詢趨勢（最近 7 天）',
             font: { size: 16, weight: 'bold' },
-            padding: 20
+            padding: 20,
+            color: colors.textColor
           }
         },
         scales: {
+          x: {
+            ticks: {
+              color: colors.textColor
+            },
+            grid: {
+              color: colors.gridColor
+            }
+          },
           y: {
             beginAtZero: true,
             ticks: {
-              stepSize: 1
+              stepSize: 1,
+              color: colors.textColor
+            },
+            grid: {
+              color: colors.gridColor
             }
           }
         }
@@ -293,6 +351,8 @@ export class AnalyticsComponent {
     const ctx = canvas.nativeElement.getContext('2d');
     if (!ctx) return;
 
+    const colors = this.chartColors();
+
     const config: ChartConfiguration = {
       type: 'bar',
       data: this.topQueriesData(),
@@ -308,14 +368,27 @@ export class AnalyticsComponent {
             display: true,
             text: '熱門查詢主題 TOP 5',
             font: { size: 16, weight: 'bold' },
-            padding: 20
+            padding: 20,
+            color: colors.textColor
           }
         },
         scales: {
           x: {
             beginAtZero: true,
             ticks: {
-              stepSize: 1
+              stepSize: 1,
+              color: colors.textColor
+            },
+            grid: {
+              color: colors.gridColor
+            }
+          },
+          y: {
+            ticks: {
+              color: colors.textColor
+            },
+            grid: {
+              color: colors.gridColor
             }
           }
         }
@@ -335,6 +408,7 @@ export class AnalyticsComponent {
     const ctx = canvas.nativeElement.getContext('2d');
     if (!ctx) return;
 
+    const colors = this.chartColors();
     const stats = this.queryStats();
     const successRate = stats.total > 0
       ? ((stats.successful / stats.total) * 100).toFixed(1)
@@ -351,14 +425,16 @@ export class AnalyticsComponent {
             position: 'bottom',
             labels: {
               font: { size: 12 },
-              padding: 15
+              padding: 15,
+              color: colors.textColor
             }
           },
           title: {
             display: true,
             text: `查詢成功率: ${successRate}%`,
             font: { size: 16, weight: 'bold' },
-            padding: 20
+            padding: 20,
+            color: colors.textColor
           }
         }
       }

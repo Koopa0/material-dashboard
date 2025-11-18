@@ -77,6 +77,26 @@
             </div>
             <div class="message-content">
               <div class="message-text">{{ message.content }}</div>
+
+              <!-- 引用來源列表 -->
+              @if (message.citations && message.citations.length > 0) {
+                <div class="citations-section">
+                  <mat-divider class="citations-divider"></mat-divider>
+                  <div class="citations-header">
+                    <mat-icon class="citations-icon">link</mat-icon>
+                    <span class="citations-title">引用來源</span>
+                  </div>
+                  <div class="citations-list">
+                    @for (citation of message.citations; track citation.index) {
+                      <div class="citation-item" [matTooltip]="citation.snippet" matTooltipPosition="above">
+                        <app-citation [citation]="citation"></app-citation>
+                        <span class="citation-doc-title">{{ citation.documentTitle }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
               <div class="message-time">
                 {{ message.timestamp | date: 'HH:mm' }}
               </div>
