@@ -351,6 +351,17 @@ export function generateMockDocuments(count: number = 300): Document[] {
         // 取得文檔來源資訊
         const { source, sourceUrl } = getDocumentSource(category, template.title);
 
+        // 為前 5% 的文檔設定釘選
+        const isPinned = currentCount < count * 0.05 ? true : undefined;
+
+        // 為前 8% 的文檔設定收藏
+        const isFavorited = currentCount < count * 0.08 ? true : undefined;
+
+        // 為前 10% 的文檔設定最近查看時間
+        const lastViewedAt = currentCount < count * 0.1
+          ? randomDate(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), new Date())
+          : undefined;
+
         documents.push({
           id: generateId(),
           title: template.title,
@@ -367,6 +378,9 @@ export function generateMockDocuments(count: number = 300): Document[] {
           viewCount: Math.floor(Math.random() * 1000),
           size: template.content.length,
           language: Math.random() > 0.7 ? 'en' : 'zh-TW',
+          isPinned,
+          isFavorited,
+          lastViewedAt,
         });
 
         currentCount++;
