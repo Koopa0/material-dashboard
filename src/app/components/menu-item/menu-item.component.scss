@@ -4,10 +4,10 @@
 
 .menu-item {
   border-left: 5px solid;
-  border-left-color: rgba(0, 0, 0, 0);
+  border-left-color: transparent;
 }
 
 .selected-menu-item {
-  border-left-color: blue;
-  background-color: rgba(0, 0, 0, 0.05);
+  border-left-color: var(--color-accent);
+  background-color: var(--color-surface-hover);
 }

@@ -60,7 +60,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  background: var(--color-accent);
   color: white;
 
   .header-content {
@@ -103,6 +103,11 @@
         }
       }
     }
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 4px;
   }
 
   button {
