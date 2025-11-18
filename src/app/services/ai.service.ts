@@ -297,7 +297,7 @@ ${contextText}
       const response = await result.response;
       const text = response.text();
 
-      return text.split(/[,、]/).map((tag) => tag.trim()).filter(Boolean);
+      return text.split(/[,、]/).map((tag: string) => tag.trim()).filter(Boolean);
     } catch (error) {
       console.error('生成標籤失敗:', error);
       return [];
