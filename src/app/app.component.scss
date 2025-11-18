@@ -42,6 +42,89 @@ mat-sidenav-content {
 }
 
 mat-sidenav {
-  --mat-sidenav-container-divider-color: var(--sys-outline-variant);
+  --mat-sidenav-container-divider-color: var(--color-border);
   --mat-sidenav-container-shape: 0px;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  transition: background-color var(--transition-base) ease,
+              border-color var(--transition-base) ease;
+}
+
+// Material Card 主題適配
+::ng-deep {
+  mat-card {
+    background: var(--color-surface) !important;
+    color: var(--color-on-surface) !important;
+    border: 1px solid var(--color-border);
+    transition: background-color var(--transition-base) ease,
+                color var(--transition-base) ease,
+                border-color var(--transition-base) ease;
+  }
+
+  mat-card-header {
+    color: var(--color-on-surface) !important;
+  }
+
+  mat-card-title {
+    color: var(--color-on-surface) !important;
+  }
+
+  mat-card-subtitle {
+    color: var(--color-text-secondary) !important;
+  }
+
+  mat-card-content {
+    color: var(--color-on-surface) !important;
+  }
+
+  // Chip 主題適配
+  mat-chip {
+    background: var(--color-surface-variant) !important;
+    color: var(--color-on-surface) !important;
+  }
+
+  // Table 主題適配
+  .mat-mdc-table {
+    background: var(--color-surface) !important;
+    color: var(--color-on-surface) !important;
+  }
+
+  .mat-mdc-header-cell {
+    color: var(--color-on-surface) !important;
+    background: var(--color-surface-variant) !important;
+  }
+
+  .mat-mdc-cell {
+    color: var(--color-on-surface) !important;
+    border-bottom-color: var(--color-border) !important;
+  }
+
+  .mat-mdc-row:hover {
+    background: var(--color-surface-hover) !important;
+  }
+
+  // Form Field 主題適配
+  .mat-mdc-form-field {
+    .mdc-text-field--outlined {
+      background: var(--color-surface) !important;
+
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: var(--color-border) !important;
+      }
+    }
+
+    .mdc-text-field--filled {
+      background-color: var(--color-surface-variant) !important;
+    }
+
+    input, textarea {
+      color: var(--color-on-surface) !important;
+    }
+
+    label {
+      color: var(--color-text-secondary) !important;
+    }
+  }
 }
