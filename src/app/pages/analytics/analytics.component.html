@@ -1,1 +1,116 @@
-<p>analytics works!</p>
+<!--
+  Analytics 分析頁面模板
+
+  使用 Material Design Card 布局和 Chart.js 圖表
+  展示 RAG 知識庫的各項分析數據
+-->
+<div class="analytics-container">
+  <!-- 頁面標題 -->
+  <div class="page-header">
+    <h1 class="page-title">數據分析</h1>
+    <p class="page-subtitle">RAG 知識庫使用情況與趨勢分析</p>
+  </div>
+
+  <!-- 統計摘要卡片 -->
+  <div class="stats-summary">
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-label">總文檔數</div>
+        <div class="stat-value">{{ stats().totalDocuments }}</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-label">查詢總數</div>
+        <div class="stat-value">{{ queryStats().total }}</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-label">成功率</div>
+        <div class="stat-value">{{
+          queryStats().total > 0
+            ? ((queryStats().successful / queryStats().total) * 100).toFixed(1)
+            : '0.0'
+        }}%</div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-card-content>
+        <div class="stat-label">平均回應時間</div>
+        <div class="stat-value">{{ queryStats().avgLatency.toFixed(0) }}ms</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- 圖表區域 -->
+  <div class="charts-grid">
+    <!-- 查詢趨勢折線圖 -->
+    <mat-card class="chart-card chart-card-wide">
+      <mat-card-content>
+        <div class="chart-container">
+          <canvas #queryTrendChart></canvas>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- 文檔類別分佈圓餅圖 -->
+    <mat-card class="chart-card">
+      <mat-card-content>
+        <div class="chart-container">
+          <canvas #categoryChart></canvas>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- 查詢成功率圓環圖 -->
+    <mat-card class="chart-card">
+      <mat-card-content>
+        <div class="chart-container">
+          <canvas #successRateChart></canvas>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- 熱門查詢主題長條圖 -->
+    <mat-card class="chart-card chart-card-wide">
+      <mat-card-content>
+        <div class="chart-container">
+          <canvas #topQueriesChart></canvas>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- 類別詳細統計表格 -->
+  <mat-card class="category-stats-card">
+    <mat-card-header>
+      <mat-card-title>類別詳細統計</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table class="category-stats-table">
+        <thead>
+          <tr>
+            <th>技術類別</th>
+            <th>文檔數量</th>
+            <th>百分比</th>
+            <th>平均檢視次數</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (stat of categoryStats(); track stat.category) {
+            <tr>
+              <td class="category-name">{{ stat.category }}</td>
+              <td class="count">{{ stat.documentCount }}</td>
+              <td class="percentage">{{ stat.percentage.toFixed(1) }}%</td>
+              <td class="views">{{ stat.avgViews.toFixed(0) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>
