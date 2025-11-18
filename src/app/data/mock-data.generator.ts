@@ -9,6 +9,7 @@ import {
   Document,
   DocumentStatus,
   TechnologyCategory,
+  DocumentSource,
 } from '../models/document.model';
 import { Embedding, Point2D } from '../models/embedding.model';
 import { QueryRecord, QueryType, PopularQuery } from '../models/query.model';
@@ -272,19 +273,65 @@ function randomDate(start: Date, end: Date): Date {
 }
 
 /**
+ * 根據技術分類取得文檔來源資訊
+ */
+function getDocumentSource(category: TechnologyCategory, title: string): {
+  source: DocumentSource;
+  sourceUrl?: string;
+} {
+  const sourceMap: Record<TechnologyCategory, Array<{
+    source: DocumentSource;
+    urlTemplate: string;
+  }>> = {
+    [TechnologyCategory.GOLANG]: [
+      { source: DocumentSource.GITHUB, urlTemplate: 'https://github.com/golang/go/wiki' },
+      { source: DocumentSource.WEB_ARTICLE, urlTemplate: 'https://go.dev/blog' },
+    ],
+    [TechnologyCategory.RUST]: [
+      { source: DocumentSource.GITHUB, urlTemplate: 'https://github.com/rust-lang/book' },
+      { source: DocumentSource.WEB_ARTICLE, urlTemplate: 'https://blog.rust-lang.org' },
+    ],
+    [TechnologyCategory.FLUTTER]: [
+      { source: DocumentSource.GITHUB, urlTemplate: 'https://github.com/flutter/flutter/wiki' },
+      { source: DocumentSource.WEB_ARTICLE, urlTemplate: 'https://flutter.dev/docs' },
+    ],
+    [TechnologyCategory.ANGULAR]: [
+      { source: DocumentSource.GITHUB, urlTemplate: 'https://github.com/angular/angular' },
+      { source: DocumentSource.WEB_ARTICLE, urlTemplate: 'https://angular.dev/overview' },
+    ],
+    [TechnologyCategory.AI]: [
+      { source: DocumentSource.WEB_ARTICLE, urlTemplate: 'https://arxiv.org/abs' },
+      { source: DocumentSource.NOTION, urlTemplate: 'https://notion.so/ai-research' },
+    ],
+    [TechnologyCategory.GEMINI]: [
+      { source: DocumentSource.GOOGLE_DOCS, urlTemplate: 'https://ai.google.dev/gemini-api/docs' },
+      { source: DocumentSource.WEB_ARTICLE, urlTemplate: 'https://deepmind.google/technologies/gemini' },
+    ],
+    [TechnologyCategory.SYSTEM_DESIGN]: [
+      { source: DocumentSource.NOTION, urlTemplate: 'https://notion.so/system-design' },
+      { source: DocumentSource.WEB_ARTICLE, urlTemplate: 'https://systemdesign.one' },
+    ],
+    [TechnologyCategory.POSTGRES]: [
+      { source: DocumentSource.GITHUB, urlTemplate: 'https://github.com/postgres/postgres' },
+      { source: DocumentSource.WEB_ARTICLE, urlTemplate: 'https://postgresql.org/docs' },
+    ],
+  };
+
+  const sources = sourceMap[category];
+  const selected = sources[Math.floor(Math.random() * sources.length)];
+
+  return {
+    source: selected.source,
+    sourceUrl: `${selected.urlTemplate}/${encodeURIComponent(title.toLowerCase().replace(/\s+/g, '-'))}`,
+  };
+}
+
+/**
  * 生成模擬文檔資料
  */
 export function generateMockDocuments(count: number = 300): Document[] {
   const documents: Document[] = [];
   const categories = Object.values(TechnologyCategory);
-  const authors = [
-    '張小明',
-    '李大華',
-    '王美麗',
-    'John Doe',
-    'Jane Smith',
-    '陳建國',
-  ];
 
   let currentCount = 0;
   while (currentCount < count) {
@@ -301,6 +348,9 @@ export function generateMockDocuments(count: number = 300): Document[] {
         );
         const updatedAt = randomDate(createdAt, new Date());
 
+        // 取得文檔來源資訊
+        const { source, sourceUrl } = getDocumentSource(category, template.title);
+
         documents.push({
           id: generateId(),
           title: template.title,
@@ -312,7 +362,8 @@ export function generateMockDocuments(count: number = 300): Document[] {
           status: DocumentStatus.ACTIVE,
           createdAt,
           updatedAt,
-          author: authors[Math.floor(Math.random() * authors.length)],
+          source,
+          sourceUrl,
           viewCount: Math.floor(Math.random() * 1000),
           size: template.content.length,
           language: Math.random() > 0.7 ? 'en' : 'zh-TW',

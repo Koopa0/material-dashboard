@@ -1,0 +1,15 @@
+<!--
+  主題切換器按鈕
+
+  使用 Material Icon 顯示太陽/月亮圖示
+  帶有平滑的旋轉動畫
+-->
+<button
+  mat-icon-button
+  class="theme-toggle-button"
+  [matTooltip]="getTooltipText()"
+  (click)="toggleTheme()"
+  [attr.aria-label]="getTooltipText()"
+>
+  <mat-icon class="theme-icon">{{ getThemeIcon() }}</mat-icon>
+</button>

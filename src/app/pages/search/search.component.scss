@@ -5,42 +5,102 @@
 
   h1 {
     margin-bottom: 24px;
+    font-size: 32px;
+    font-weight: 500;
   }
 }
 
 .search-card {
   margin-bottom: 24px;
+  background: var(--color-surface);
+  transition: background-color 0.3s ease;
 }
 
 .search-container {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-
   .search-field {
-    flex: 1;
+    width: 100%;
   }
 }
 
 .search-info {
-  margin-top: 8px;
-  color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  color: var(--color-text-secondary);
   font-size: 14px;
+
+  .info-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--color-primary);
+  }
+
+  strong {
+    color: var(--color-primary);
+  }
+
+  .latency {
+    color: var(--color-text-tertiary);
+    font-size: 12px;
+  }
+
+  &.no-results {
+    color: var(--color-text-tertiary);
+  }
 }
 
 .results-container {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-height: 200px;
 }
 
 .result-card {
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--color-surface);
+  border: 1px solid transparent;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    border-color: var(--color-primary);
+  }
+
+  mat-card-header {
+    margin-bottom: 12px;
+  }
+
+  mat-card-title {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  mat-card-subtitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    color: var(--color-text-secondary);
+
+    .source-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      color: var(--color-primary);
+    }
+  }
+
+  mat-card-content {
+    p {
+      line-height: 1.6;
+      color: var(--color-text-secondary);
+      margin-bottom: 12px;
+    }
   }
 }
 
@@ -49,16 +109,171 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
+
+  .more-tags {
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+    align-self: center;
+  }
+
+  mat-chip {
+    font-size: 12px;
+  }
 }
 
-.relevance {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #4caf50;
+// 相關度進度條
+.relevance-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-divider);
+
+  .relevance-label {
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+  }
+
+  .relevance-progress {
+    flex: 1;
+    height: 6px;
+    background: var(--color-divider);
+    border-radius: 3px;
+    overflow: hidden;
+
+    .relevance-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+  }
+
+  .relevance-score {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-primary);
+    min-width: 30px;
+    text-align: right;
+  }
+}
+
+// 搜尋結果高亮
+::ng-deep .highlight {
+  background: var(--color-primary);
+  color: white;
+  padding: 2px 4px;
+  border-radius: 3px;
   font-weight: 500;
 }
 
-.loading-card {
+// 深色模式下的高亮調整
+:host-context(.dark-theme) ::ng-deep .highlight {
+  background: var(--color-primary);
+  box-shadow: var(--glow-primary);
+}
+
+// 空狀態
+.empty-state {
   text-align: center;
-  padding: 48px;
+  padding: 64px 24px;
+  color: var(--color-text-secondary);
+
+  .empty-icon {
+    font-size: 80px;
+    width: 80px;
+    height: 80px;
+    color: var(--color-primary);
+    opacity: 0.5;
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--color-text);
+    margin-bottom: 12px;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    margin-bottom: 32px;
+  }
+
+  .search-tips {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: left;
+    padding: 24px;
+    background: var(--color-surface);
+    border-radius: 8px;
+    border: 1px solid var(--color-divider);
+
+    h3 {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: 12px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        padding: 8px 0;
+        padding-left: 24px;
+        position: relative;
+        font-size: 14px;
+        line-height: 1.6;
+
+        &::before {
+          content: '✓';
+          position: absolute;
+          left: 0;
+          color: var(--color-primary);
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
+
+// 響應式設計
+@media (max-width: 768px) {
+  .search-page {
+    padding: 16px;
+  }
+
+  .result-card {
+    mat-card-title {
+      font-size: 18px;
+    }
+
+    mat-card-subtitle {
+      font-size: 12px;
+    }
+  }
+
+  .empty-state {
+    padding: 32px 16px;
+
+    .empty-icon {
+      font-size: 60px;
+      width: 60px;
+      height: 60px;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
 }

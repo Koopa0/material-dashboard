@@ -199,12 +199,20 @@ export class KnowledgeBaseService {
     // 從 localStorage 載入或生成新資料
     const savedDocs = this.loadFromLocalStorage<Document[]>('documents');
 
-    if (savedDocs && savedDocs.length > 0) {
+    // 檢查是否有舊資料格式（含 author 欄位）
+    const hasOldFormat = savedDocs && savedDocs.length > 0 &&
+                        (savedDocs[0] as any).author !== undefined;
+
+    if (savedDocs && savedDocs.length > 0 && !hasOldFormat) {
       this.documentsSignal.set(savedDocs);
     } else {
-      // 生成模擬資料
+      // 生成模擬資料（舊資料格式時重新生成）
       const mockDocs = generateMockDocuments(300);
       this.documentsSignal.set(mockDocs);
+
+      if (hasOldFormat) {
+        console.log('偵測到舊資料格式，已重新生成文檔資料');
+      }
     }
 
     // 生成向量嵌入
@@ -237,7 +245,8 @@ export class KnowledgeBaseService {
       status: DocumentStatus.ACTIVE,
       createdAt: new Date(),
       updatedAt: new Date(),
-      author: request.author,
+      source: request.source,
+      sourceUrl: request.sourceUrl,
       viewCount: 0,
       size: request.content.length,
       language: request.language || 'zh-TW',

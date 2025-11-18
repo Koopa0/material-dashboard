@@ -32,6 +32,51 @@ export enum DocumentStatus {
 }
 
 /**
+ * 文檔來源枚舉
+ * 定義文檔可能的來源
+ */
+export enum DocumentSource {
+  NOTION = 'Notion',
+  GOOGLE_DOCS = 'Google Docs',
+  GITHUB = 'GitHub',
+  OBSIDIAN = 'Obsidian',
+  WEB_ARTICLE = 'Web Article',
+  MARKDOWN = 'Markdown File',
+  PDF = 'PDF',
+  MANUAL = 'Manual Input',
+}
+
+/**
+ * 來源元資料介面
+ * 儲存特定來源的額外資訊
+ */
+export interface SourceMetadata {
+  /** GitHub repo 名稱 (GitHub 專用) */
+  repoName?: string;
+
+  /** GitHub 檔案路徑 (GitHub 專用) */
+  filePath?: string;
+
+  /** Notion page ID (Notion 專用) */
+  notionPageId?: string;
+
+  /** Notion database ID (Notion 專用) */
+  notionDatabaseId?: string;
+
+  /** Google Docs document ID (Google Docs 專用) */
+  googleDocsId?: string;
+
+  /** 最後同步時間 */
+  lastSynced?: Date;
+
+  /** 同步狀態 */
+  syncStatus?: 'synced' | 'pending' | 'failed';
+
+  /** 原始 URL */
+  originalUrl?: string;
+}
+
+/**
  * 文檔介面
  * 代表知識庫中的一份技術文檔
  */
@@ -66,8 +111,14 @@ export interface Document {
   /** 最後更新時間 */
   updatedAt: Date;
 
-  /** 作者 */
-  author: string;
+  /** 文檔來源 */
+  source: DocumentSource;
+
+  /** 來源 URL */
+  sourceUrl?: string;
+
+  /** 來源元資料 */
+  sourceMetadata?: SourceMetadata;
 
   /** 檢視次數 */
   viewCount: number;
@@ -91,7 +142,8 @@ export interface CreateDocumentRequest {
   content: string;
   category: TechnologyCategory;
   tags: string[];
-  author: string;
+  source: DocumentSource;
+  sourceUrl?: string;
   language?: 'zh-TW' | 'en' | 'ja';
 }
 

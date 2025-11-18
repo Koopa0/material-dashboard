@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+
 @use "./app/styles/material.scss";
 
 @use "./app/styles/colors.scss";
@@ -6,6 +7,9 @@
 @use "./app/styles/tailwind.scss";
 
 @use "./app/styles/custom.scss";
+
+/* Gemini 主題配色（在 @use 之後載入） */
+@use "./styles/themes.scss";
 
 html,
 body {
