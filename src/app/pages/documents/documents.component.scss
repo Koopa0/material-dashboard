@@ -67,3 +67,58 @@
     font-size: 12px;
   }
 }
+
+// 分頁器樣式 - 支援深淺色模式
+::ng-deep .table-container {
+  .mat-mdc-paginator {
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    border-top: 1px solid var(--color-border);
+
+    .mat-mdc-paginator-container {
+      padding: 8px 16px;
+      min-height: 56px;
+    }
+
+    // 文字顏色
+    .mat-mdc-paginator-page-size-label,
+    .mat-mdc-paginator-range-label {
+      color: var(--color-on-surface);
+      margin: 0 8px;
+    }
+
+    // 下拉選單
+    .mat-mdc-form-field {
+      .mat-mdc-text-field-wrapper {
+        background-color: transparent;
+      }
+
+      .mat-mdc-select-value,
+      .mat-mdc-select-arrow {
+        color: var(--color-on-surface);
+      }
+    }
+
+    // 分頁按鈕
+    .mat-mdc-paginator-navigation-previous,
+    .mat-mdc-paginator-navigation-next,
+    .mat-mdc-paginator-navigation-first,
+    .mat-mdc-paginator-navigation-last {
+      .mat-mdc-button-persistent-ripple {
+        background-color: transparent;
+      }
+
+      .mat-icon {
+        color: var(--color-on-surface);
+      }
+
+      &:disabled .mat-icon {
+        color: var(--color-text-disabled);
+      }
+
+      &:hover:not(:disabled) {
+        background-color: var(--color-surface-hover);
+      }
+    }
+  }
+}
