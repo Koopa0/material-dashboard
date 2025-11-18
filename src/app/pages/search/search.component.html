@@ -1,36 +1,45 @@
 <div class="search-page">
-  <h1>知識庫搜尋</h1>
+  <h1>
+    <span class="gradient-text">知識庫搜尋</span>
+  </h1>
 
   <!-- 搜尋列 -->
   <mat-card class="search-card">
     <mat-card-content>
       <div class="search-container">
         <mat-form-field appearance="outline" class="search-field">
-          <mat-label>搜尋文檔</mat-label>
+          <mat-label>即時搜尋</mat-label>
           <input
             matInput
-            [(ngModel)]="searchQuery"
-            (keyup.enter)="onSearch()"
-            placeholder="例如：Angular Signals、Rust 所有權、Gemini API..."
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
+            placeholder="輸入關鍵字開始搜尋（例如：Angular、Signals、Rust）..."
+            autocomplete="off"
           />
           <mat-icon matPrefix>search</mat-icon>
+          @if (searchQuery()) {
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="onClear()"
+              aria-label="清除"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          }
         </mat-form-field>
-
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="onSearch()"
-          [disabled]="!searchQuery()"
-        >
-          搜尋
-        </button>
-
-        <button mat-button (click)="onClear()">清除</button>
       </div>
 
-      @if (searchLatency() > 0) {
+      @if (showResults() && searchResults().length > 0) {
         <p class="search-info">
-          找到 {{ searchResults().length }} 個結果（{{ searchLatency() }}ms）
+          <mat-icon class="info-icon">info</mat-icon>
+          找到 <strong>{{ searchResults().length }}</strong> 個結果
+          <span class="latency">（{{ searchLatency() }}ms）</span>
+        </p>
+      } @else if (showResults() && searchResults().length === 0) {
+        <p class="search-info no-results">
+          <mat-icon class="info-icon">search_off</mat-icon>
+          沒有找到符合「<strong>{{ searchQuery() }}</strong>」的結果
         </p>
       }
     </mat-card-content>
@@ -38,36 +47,66 @@
 
   <!-- 搜尋結果 -->
   <div class="results-container">
-    @if (isSearching()) {
-      <mat-card class="loading-card">
-        <mat-card-content>
-          <p>搜尋中...</p>
-        </mat-card-content>
-      </mat-card>
-    } @else if (searchResults().length > 0) {
-      @for (doc of searchResults(); track doc.id) {
-        <mat-card class="result-card" (click)="viewDocument(doc)">
-          <mat-card-header>
-            <mat-card-title>{{ doc.title }}</mat-card-title>
-            <mat-card-subtitle>
-              {{ doc.category }} • {{ doc.source }} • {{
-                doc.updatedAt | date: 'yyyy-MM-dd'
-              }}
-            </mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <p>{{ doc.summary }}</p>
-            <div class="tags">
-              @for (tag of doc.tags; track tag) {
-                <mat-chip>{{ tag }}</mat-chip>
+    @if (showResults()) {
+      @if (searchResults().length > 0) {
+        @for (doc of searchResults(); track doc.id) {
+          <mat-card class="result-card" (click)="viewDocument(doc)">
+            <mat-card-header>
+              <mat-card-title [innerHTML]="highlightText(doc.title, searchQuery())"></mat-card-title>
+              <mat-card-subtitle>
+                <mat-icon class="source-icon">{{
+                  doc.source === 'GitHub' ? 'code' :
+                  doc.source === 'Notion' ? 'description' :
+                  doc.source === 'Google Docs' ? 'article' :
+                  doc.source === 'Web Article' ? 'language' :
+                  'edit'
+                }}</mat-icon>
+                {{ doc.category }} • {{ doc.source }} • {{
+                  doc.updatedAt | date: 'yyyy-MM-dd'
+                }}
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p [innerHTML]="highlightText(doc.summary, searchQuery())"></p>
+              <div class="tags">
+                @for (tag of doc.tags.slice(0, 5); track tag) {
+                  <mat-chip [innerHTML]="highlightText(tag, searchQuery())"></mat-chip>
+                }
+                @if (doc.tags.length > 5) {
+                  <span class="more-tags">+{{ doc.tags.length - 5 }}</span>
+                }
+              </div>
+              @if (doc.relevanceScore) {
+                <div class="relevance-bar">
+                  <span class="relevance-label">相關度</span>
+                  <div class="relevance-progress">
+                    <div
+                      class="relevance-fill"
+                      [style.width.%]="doc.relevanceScore"
+                    ></div>
+                  </div>
+                  <span class="relevance-score">{{ doc.relevanceScore }}</span>
+                </div>
               }
-            </div>
-            @if (doc.relevanceScore) {
-              <p class="relevance">相關度: {{ doc.relevanceScore }}%</p>
-            }
-          </mat-card-content>
-        </mat-card>
+            </mat-card-content>
+          </mat-card>
+        }
       }
+    } @else {
+      <!-- 初始狀態提示 -->
+      <div class="empty-state">
+        <mat-icon class="empty-icon">search</mat-icon>
+        <h2>開始搜尋您的知識庫</h2>
+        <p>輸入關鍵字以即時搜尋 {{ knowledgeBase.documents().length }} 篇文檔</p>
+        <div class="search-tips">
+          <h3>搜尋技巧：</h3>
+          <ul>
+            <li>支援標題、內容、標籤、分類搜尋</li>
+            <li>即時顯示結果，無需按下搜尋按鈕</li>
+            <li>依相關性自動排序</li>
+          </ul>
+        </div>
+      </div>
     }
   </div>
 </div>
