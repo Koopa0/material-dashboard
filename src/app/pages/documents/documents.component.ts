@@ -68,7 +68,7 @@ export class DocumentsComponent {
    */
   viewDocument(doc: Document): void {
     this.knowledgeBase.selectedDocument.set(doc);
-    this.knowledgeBase.incrementViewCount(doc.id);
+    this.knowledgeBase.recordView(doc.id);
     console.log('Selected document:', doc);
   }
 
@@ -115,7 +115,12 @@ export class DocumentsComponent {
    * 分頁變更
    */
   onPageChange(event: any): void {
+    console.log('Page change event:', event);
+    console.log('Setting page to:', event.pageIndex + 1);
+    console.log('Setting page size to:', event.pageSize);
     this.knowledgeBase.setPage(event.pageIndex + 1);
     this.knowledgeBase.setPageSize(event.pageSize);
+    console.log('Current page after change:', this.knowledgeBase.currentPage());
+    console.log('Documents count:', this.documents().length);
   }
 }

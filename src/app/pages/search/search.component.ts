@@ -146,7 +146,8 @@ export class SearchComponent {
    */
   viewDocument(doc: Document): void {
     this.knowledgeBase.selectedDocument.set(doc);
-    this.knowledgeBase.incrementViewCount(doc.id);
+    this.knowledgeBase.recordView(doc.id);
+    console.log('Viewing document from search:', doc);
   }
 
   /**
