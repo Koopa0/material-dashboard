@@ -1,0 +1,280 @@
+/**
+ * 命令面板樣式 - Gemini 風格
+ */
+
+// 背景遮罩
+.command-palette-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15vh;
+  animation: fadeIn 0.15s ease-out;
+}
+
+// 命令面板容器
+.command-palette {
+  width: 90%;
+  max-width: 640px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  animation: slideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+// 搜尋輸入框區域
+.command-palette-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+
+  .search-icon {
+    color: var(--color-text-secondary);
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .command-palette-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+    color: var(--color-on-surface);
+    font-family: inherit;
+
+    &::placeholder {
+      color: var(--color-text-secondary);
+      opacity: 0.6;
+    }
+  }
+
+  .keyboard-hint {
+    display: flex;
+    gap: 4px;
+  }
+}
+
+// 命令列表
+.command-list {
+  overflow-y: auto;
+  max-height: 400px;
+  padding: 8px;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 4px;
+
+    &:hover {
+      background: var(--color-text-secondary);
+    }
+  }
+}
+
+// 空狀態
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  color: var(--color-text-secondary);
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+// 命令項目
+.command-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast) ease;
+  border: 1px solid transparent;
+
+  &:hover,
+  &.selected {
+    background: var(--color-surface-hover);
+    border-color: var(--color-primary);
+  }
+
+  &.selected {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .command-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: transform var(--transition-fast) ease;
+  }
+
+  &:hover .command-icon,
+  &.selected .command-icon {
+    transform: scale(1.1);
+  }
+
+  .command-info {
+    flex: 1;
+    min-width: 0;
+
+    .command-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-on-surface);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-bottom: 2px;
+    }
+
+    .command-description {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .command-shortcut {
+    flex-shrink: 0;
+  }
+}
+
+// 底部提示
+.command-palette-footer {
+  border-top: 1px solid var(--color-border);
+  padding: 12px 20px;
+  background: var(--color-surface-variant);
+
+  .footer-hint {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+
+    .hint-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+    }
+  }
+}
+
+// 鍵盤按鍵樣式
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  line-height: 1;
+}
+
+// 動畫
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// 深色模式增強
+body[data-theme='dark'] {
+  .command-palette {
+    box-shadow: var(--shadow-xl), var(--glow-primary);
+  }
+
+  .command-item.selected {
+    background: rgba(var(--color-primary-rgb), 0.1);
+    box-shadow: var(--glow-primary);
+  }
+
+  kbd {
+    background: var(--color-surface-variant);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// 響應式設計
+@media (max-width: 768px) {
+  .command-palette-backdrop {
+    padding-top: 10vh;
+  }
+
+  .command-palette {
+    width: 95%;
+    max-height: 80vh;
+  }
+
+  .command-palette-footer {
+    .footer-hint {
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  }
+}
