@@ -7,7 +7,7 @@
  * - 搜尋結果高亮
  * - 效能優化
  */
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -35,7 +35,7 @@ import { Document } from '../../models';
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
 })
-export class SearchComponent {
+export class SearchComponent implements OnInit {
   /** 知識庫服務 */
   knowledgeBase = inject(KnowledgeBaseService);
 
@@ -44,6 +44,19 @@ export class SearchComponent {
 
   /** 搜尋開始時間（用於計算延遲） */
   private searchStartTime = signal<number>(0);
+
+  constructor() {
+    // 監聽搜尋查詢變化
+    effect(() => {
+      const query = this.searchQuery();
+      console.log('🔍 搜尋查詢變更:', query);
+    });
+  }
+
+  ngOnInit(): void {
+    console.log('🔎 Search 組件初始化');
+    console.log('📚 可用文檔總數:', this.knowledgeBase.documents().length);
+  }
 
   /**
    * 即時搜尋結果（使用 computed signal）
