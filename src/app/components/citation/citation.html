@@ -1,0 +1,11 @@
+<button
+  class="citation-badge"
+  type="button"
+  [matTooltip]="getTooltipText()"
+  matTooltipClass="citation-tooltip"
+  [matTooltipPosition]="'above'"
+  [matTooltipShowDelay]="300"
+  (click)="onClick()"
+>
+  [{{ citation().index }}]
+</button>

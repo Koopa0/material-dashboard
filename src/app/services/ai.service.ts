@@ -12,6 +12,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
 import { Document } from '../models/document.model';
+import { Citation } from '../models/citation.model';
 
 /**
  * AI 回應介面
@@ -20,6 +21,7 @@ export interface AIResponse {
   text: string;
   isError?: boolean;
   latency?: number;
+  citations?: Citation[];
 }
 
 /**
@@ -30,6 +32,7 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  citations?: Citation[];
 }
 
 /**
@@ -191,18 +194,18 @@ export class AIService {
 
     try {
       if (this.DEMO_MODE) {
-        // 模擬模式：生成智慧回答
+        // 模擬模式：生成帶引用的智慧回答
         await this.delay(1200);
 
-        const responses = this.generateMockResponse(question, context);
-        const response = responses[Math.floor(Math.random() * responses.length)];
+        const { text, citations } = this.generateMockResponseWithCitations(question, context);
         const latency = performance.now() - startTime;
 
-        this.addChatMessage('assistant', response);
+        this.addChatMessage('assistant', text, citations);
         this.isProcessing.set(false);
 
         return {
-          text: response,
+          text,
+          citations,
           latency: Math.round(latency),
         };
       }
@@ -314,12 +317,13 @@ ${contextText}
   /**
    * 加入聊天訊息
    */
-  private addChatMessage(role: 'user' | 'assistant', content: string): void {
+  private addChatMessage(role: 'user' | 'assistant', content: string, citations?: Citation[]): void {
     const message: ChatMessage = {
       id: this.generateId(),
       role,
       content,
       timestamp: new Date(),
+      citations,
     };
 
     this.chatHistorySignal.update((history) => [...history, message]);
@@ -359,6 +363,56 @@ ${contextText}
       `這是一個很好的問題！知識庫中有多篇文檔涉及這個主題。我建議從基礎概念開始，逐步深入學習。`,
       `讓我幫您整理一下：知識庫中的相關文檔提供了全面的技術指南，涵蓋理論基礎、實作範例和進階技巧。`,
     ];
+  }
+
+  /**
+   * 生成帶引用的模擬回應（NotebookLM 風格）
+   */
+  private generateMockResponseWithCitations(question: string, context: Document[]): {
+    text: string;
+    citations: Citation[];
+  } {
+    const lowerQuestion = question.toLowerCase();
+    let responseText = '';
+    const citations: Citation[] = [];
+
+    // 從 context 中選擇 2-3 個文檔作為引用來源
+    const relevantDocs = context.slice(0, Math.min(3, context.length));
+
+    // 生成引用
+    relevantDocs.forEach((doc, index) => {
+      citations.push({
+        index: index + 1,
+        documentId: doc.id,
+        documentTitle: doc.title,
+        snippet: doc.content.substring(0, 150) + '...',
+        relevanceScore: 0.95 - index * 0.1,
+        category: doc.category,
+        tags: doc.tags,
+      });
+    });
+
+    // 基於問題生成帶引用標記的回應
+    if (lowerQuestion.includes('什麼') || lowerQuestion.includes('介紹')) {
+      responseText = citations.length > 0
+        ? `根據 ${citations[0].documentTitle} [1] 的說明，這是一個關於 ${context[0]?.category || '技術'} 的重要主題。\n\n主要內容包括核心概念、實作方法與最佳實踐 [1][2]。${citations.length > 2 ? `相關文檔 [3] 也提供了補充說明。` : ''}`
+        : '找不到相關文檔';
+    } else if (lowerQuestion.includes('如何') || lowerQuestion.includes('怎麼')) {
+      responseText = citations.length > 0
+        ? `根據知識庫文檔 [1]，實作步驟如下：\n\n1. 首先理解基本概念 [1]\n2. 閱讀相關文檔 [2]\n3. 動手實作簡單範例\n4. 深入學習進階功能 [${citations.length}]\n\n建議您特別參考《${citations[0].documentTitle}》[1]，其中有詳細的步驟說明。`
+        : '找不到相關文檔';
+    } else if (lowerQuestion.includes('比較') || lowerQuestion.includes('差異')) {
+      responseText = citations.length >= 2
+        ? `根據 ${citations[0].documentTitle} [1] 和 ${citations[1].documentTitle} [2]，兩者的主要差異在於：\n\n• 使用場景不同 [1]\n• 技術特性各有優勢 [2]\n• 選擇時需考慮專案需求和團隊經驗 [1][2]`
+        : '找不到足夠的相關文檔進行比較';
+    } else {
+      // 預設回應
+      responseText = citations.length > 0
+        ? `根據知識庫中的相關文檔 [1]${citations.length > 1 ? `[2]` : ''}${citations.length > 2 ? `[3]` : ''}，我找到了一些有用的資訊。\n\n${citations[0].documentTitle} [1] 提供了核心概念的說明。${citations.length > 1 ? `\n${citations[1].documentTitle} [2] 則涵蓋了實作細節。` : ''}${citations.length > 2 ? `\n另外 [3] 也值得參考。` : ''}`
+        : '找不到相關文檔';
+    }
+
+    return { text: responseText, citations };
   }
 
   /**
