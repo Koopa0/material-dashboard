@@ -1,8 +1,8 @@
 /**
- * Analytics b#
+ * Analytics ï¿½b#
  *
- * (şã„ Grid @Œ8dri
- * ÿÉ-/ô.¢U:ø
+ * (ï¿½ï¿½ï¿½ Grid @ï¿½8dri
+ * ï¿½ï¿½-/ï¿½.ï¿½U:ï¿½
  */
 
 .analytics-container {
@@ -12,7 +12,7 @@
 }
 
 /**
- * bL@ß
+ * bL@ï¿½
  */
 .page-header {
   margin-bottom: 32px;
@@ -21,19 +21,19 @@
     font-size: 32px;
     font-weight: 600;
     margin: 0 0 8px 0;
-    color: #1e293b;
+    color: var(--color-text);
   }
 
   .page-subtitle {
     font-size: 16px;
-    color: #64748b;
+    color: var(--color-text-secondary);
     margin: 0;
   }
 }
 
 /**
- * qXaG@ß
- * ( Grid @ÿÉ-
+ * qXï¿½aG@ï¿½
+ * ( Grid @ï¿½ï¿½-
  */
 .stats-summary {
   display: grid;
@@ -92,8 +92,8 @@
 }
 
 /**
- * h²<@ß
- * ( Grid @/ô:ø„aG
+ * hï¿½<@ï¿½
+ * ( Grid @/ï¿½:ï¿½ï¿½aG
  */
 .charts-grid {
   display: grid;
@@ -103,11 +103,11 @@
 
   .chart-card {
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow);
     transition: box-shadow 0.2s;
 
     &:hover {
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      box-shadow: var(--shadow-md);
     }
 
     &-wide {
@@ -131,7 +131,7 @@
  */
 .category-stats-card {
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow);
 
   mat-card-header {
     padding: 20px 20px 0;
@@ -139,7 +139,7 @@
     mat-card-title {
       font-size: 20px;
       font-weight: 600;
-      color: #1e293b;
+      color: var(--color-text);
     }
   }
 
@@ -158,14 +158,14 @@
   font-size: 14px;
 
   thead {
-    background-color: #f8fafc;
+    background-color: var(--color-surface);
 
     th {
       padding: 16px;
       text-align: left;
       font-weight: 600;
-      color: #64748b;
-      border-bottom: 2px solid #e2e8f0;
+      color: var(--color-text-secondary);
+      border-bottom: 2px solid var(--color-border);
       text-transform: uppercase;
       font-size: 12px;
       letter-spacing: 0.5px;
@@ -177,21 +177,21 @@
       transition: background-color 0.2s;
 
       &:hover {
-        background-color: #f8fafc;
+        background-color: var(--color-surface-hover);
       }
 
       &:not(:last-child) {
-        border-bottom: 1px solid #e2e8f0;
+        border-bottom: 1px solid var(--color-border);
       }
     }
 
     td {
       padding: 16px;
-      color: #1e293b;
+      color: var(--color-text);
 
       &.category-name {
         font-weight: 600;
-        color: #6366f1;
+        color: var(--color-primary);
       }
 
       &.count {
@@ -199,20 +199,20 @@
       }
 
       &.percentage {
-        color: #059669;
+        color: var(--color-success);
         font-weight: 500;
       }
 
       &.size {
-        color: #64748b;
+        color: var(--color-text-secondary);
       }
     }
   }
 }
 
 /**
- * ÿÉ-
- * sK_¢U*
+ * ï¿½ï¿½-
+ * sK_ï¿½U*
  */
 @media (max-width: 1024px) {
   .charts-grid {
