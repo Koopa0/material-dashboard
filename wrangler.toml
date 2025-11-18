@@ -1,0 +1,20 @@
+# Wrangler 配置文件
+# 用於 Cloudflare Pages 部署和本地開發
+
+# Pages 專案名稱
+name = "material-dashboard"
+
+# 相容性日期
+compatibility_date = "2025-01-21"
+
+# 相容性標誌
+# nodejs_compat: 啟用 Node.js 相容層，支援 node:module 等內建模組
+# 這對於 Angular SSR 是必需的
+compatibility_flags = ["nodejs_compat"]
+
+# Pages 配置
+pages_build_output_dir = "dist/cloudflare"
+
+# 環境變數（可選）
+[vars]
+# 在這裡添加環境變數
