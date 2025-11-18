@@ -103,6 +103,17 @@ export class KnowledgeBaseService {
    */
   isLoading = signal<boolean>(false);
 
+  /**
+   * 分頁狀態
+   */
+  currentPage = signal<number>(1);
+  pageSize = signal<number>(20);
+
+  /**
+   * Notebook 過濾（用於根據 Notebook 過濾文檔）
+   */
+  selectedNotebookId = signal<string | null>(null);
+
   // ==================== 衍生狀態 (使用 Computed) ====================
 
   /**
@@ -172,6 +183,55 @@ export class KnowledgeBaseService {
     });
 
     return counts;
+  });
+
+  /**
+   * 釘選的文檔列表
+   */
+  pinnedDocuments = computed(() => {
+    return this.documents().filter((doc) => doc.isPinned);
+  });
+
+  /**
+   * 收藏的文檔列表
+   */
+  favoritedDocuments = computed(() => {
+    return this.documents().filter((doc) => doc.isFavorited);
+  });
+
+  /**
+   * 最近查看的文檔列表（按最後查看時間排序）
+   */
+  recentDocuments = computed(() => {
+    return this.documents()
+      .filter((doc) => doc.lastViewedAt)
+      .sort((a, b) => {
+        const dateA = a.lastViewedAt ? new Date(a.lastViewedAt).getTime() : 0;
+        const dateB = b.lastViewedAt ? new Date(b.lastViewedAt).getTime() : 0;
+        return dateB - dateA;
+      })
+      .slice(0, 10);
+  });
+
+  /**
+   * 分頁後的文檔列表
+   */
+  paginatedDocuments = computed(() => {
+    const filtered = this.filteredDocuments();
+    const page = this.currentPage();
+    const size = this.pageSize();
+    const start = (page - 1) * size;
+    const end = start + size;
+    return filtered.slice(start, end);
+  });
+
+  /**
+   * 總頁數
+   */
+  totalPages = computed(() => {
+    const total = this.filteredDocuments().length;
+    const size = this.pageSize();
+    return Math.ceil(total / size);
   });
 
   // ==================== 建構函式 ====================
@@ -511,5 +571,88 @@ export class KnowledgeBaseService {
     this.queryRecordsSignal.set(mockQueries);
 
     localStorage.clear();
+  }
+
+  // ==================== 釘選與收藏功能 ====================
+
+  /**
+   * 切換文檔釘選狀態
+   */
+  togglePin(documentId: string): void {
+    this.documentsSignal.update((docs) =>
+      docs.map((doc) =>
+        doc.id === documentId ? { ...doc, isPinned: !doc.isPinned } : doc
+      )
+    );
+  }
+
+  /**
+   * 切換文檔收藏狀態
+   */
+  toggleFavorite(documentId: string): void {
+    this.documentsSignal.update((docs) =>
+      docs.map((doc) =>
+        doc.id === documentId ? { ...doc, isFavorited: !doc.isFavorited } : doc
+      )
+    );
+  }
+
+  /**
+   * 記錄文檔查看
+   */
+  recordView(documentId: string): void {
+    this.documentsSignal.update((docs) =>
+      docs.map((doc) => {
+        if (doc.id === documentId) {
+          return {
+            ...doc,
+            viewCount: doc.viewCount + 1,
+            lastViewedAt: new Date(),
+          };
+        }
+        return doc;
+      })
+    );
+  }
+
+  // ==================== 分頁控制 ====================
+
+  /**
+   * 設定當前頁碼
+   */
+  setPage(page: number): void {
+    const total = this.totalPages();
+    if (page >= 1 && page <= total) {
+      this.currentPage.set(page);
+    }
+  }
+
+  /**
+   * 下一頁
+   */
+  nextPage(): void {
+    const current = this.currentPage();
+    const total = this.totalPages();
+    if (current < total) {
+      this.currentPage.set(current + 1);
+    }
+  }
+
+  /**
+   * 上一頁
+   */
+  previousPage(): void {
+    const current = this.currentPage();
+    if (current > 1) {
+      this.currentPage.set(current - 1);
+    }
+  }
+
+  /**
+   * 設定每頁顯示數量
+   */
+  setPageSize(size: number): void {
+    this.pageSize.set(size);
+    this.currentPage.set(1); // 重置到第一頁
   }
 }

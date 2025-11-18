@@ -13,6 +13,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
 import { KnowledgeBaseService } from '../../services/knowledge-base.service';
 import { Document, TechnologyCategory } from '../../models';
@@ -29,6 +31,8 @@ import { Document, TechnologyCategory } from '../../models';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatPaginatorModule,
+    MatTooltipModule,
     FormsModule,
   ],
   templateUrl: './documents.component.html',
@@ -40,6 +44,7 @@ export class DocumentsComponent {
 
   /** 表格顯示的欄位 */
   displayedColumns: string[] = [
+    'pin',
     'title',
     'category',
     'source',
@@ -52,8 +57,11 @@ export class DocumentsComponent {
   /** 技術分類選項 */
   categories = Object.values(TechnologyCategory);
 
-  /** 篩選後的文檔（使用 computed signal） */
-  documents = computed(() => this.knowledgeBase.filteredDocuments());
+  /** 分頁後的文檔（使用 computed signal） */
+  documents = computed(() => this.knowledgeBase.paginatedDocuments());
+
+  /** 分頁選項 */
+  pageSizeOptions = [10, 20, 50, 100];
 
   /**
    * 查看文檔詳情
@@ -74,6 +82,22 @@ export class DocumentsComponent {
   }
 
   /**
+   * 切換釘選狀態
+   */
+  togglePin(doc: Document, event: Event): void {
+    event.stopPropagation();
+    this.knowledgeBase.togglePin(doc.id);
+  }
+
+  /**
+   * 切換收藏狀態
+   */
+  toggleFavorite(doc: Document, event: Event): void {
+    event.stopPropagation();
+    this.knowledgeBase.toggleFavorite(doc.id);
+  }
+
+  /**
    * 篩選分類變更
    */
   onCategoryFilterChange(categories: TechnologyCategory[]): void {
@@ -85,5 +109,13 @@ export class DocumentsComponent {
    */
   onSearchChange(query: string): void {
     this.knowledgeBase.searchQuery.set(query);
+  }
+
+  /**
+   * 分頁變更
+   */
+  onPageChange(event: any): void {
+    this.knowledgeBase.setPage(event.pageIndex + 1);
+    this.knowledgeBase.setPageSize(event.pageSize);
   }
 }

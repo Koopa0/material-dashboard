@@ -131,6 +131,15 @@ export interface Document {
 
   /** 語言 */
   language: 'zh-TW' | 'en' | 'ja';
+
+  /** 是否釘選（顯示在 Dashboard） */
+  isPinned?: boolean;
+
+  /** 是否收藏 */
+  isFavorited?: boolean;
+
+  /** 最後查看時間 */
+  lastViewedAt?: Date;
 }
 
 /**
