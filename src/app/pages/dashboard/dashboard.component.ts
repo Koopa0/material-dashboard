@@ -10,6 +10,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { KnowledgeBaseService } from '../../services/knowledge-base.service';
+import { Document } from '../../models/document.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -30,4 +31,20 @@ export class DashboardComponent {
 
   /** 查詢統計 */
   queryStats = computed(() => this.knowledgeBase.queryStats());
+
+  /** 釘選的文檔 */
+  pinnedDocuments = computed(() => this.knowledgeBase.pinnedDocuments());
+
+  /** 最近查看的文檔 */
+  recentDocuments = computed(() => this.knowledgeBase.recentDocuments());
+
+  /**
+   * 查看文檔
+   */
+  viewDocument(doc: Document): void {
+    this.knowledgeBase.recordView(doc.id);
+    this.knowledgeBase.selectedDocument.set(doc);
+    console.log('Viewing document:', doc);
+    // TODO: 開啟文檔詳情面板
+  }
 }

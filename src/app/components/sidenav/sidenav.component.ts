@@ -4,12 +4,15 @@
  * 提供應用程式的主要導航介面
  * 使用 Angular v20 Signals 管理選單項目狀態
  */
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, inject } from '@angular/core';
 import { MatListModule, MatNavList } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 import { MenuItem } from '../../models/menu-item.model';
 import { MenuItemComponent } from '../menu-item/menu-item.component';
 import { MatIconModule } from '@angular/material/icon';
 import { SidenavHeaderComponent } from './sidenav-header/sidenav-header.component';
+import { NotebookService } from '../../services/notebook.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -17,6 +20,8 @@ import { SidenavHeaderComponent } from './sidenav-header/sidenav-header.componen
     MatNavList,
     MatListModule,
     MatIconModule,
+    MatButtonModule,
+    MatDividerModule,
     MenuItemComponent,
     SidenavHeaderComponent,
   ],
@@ -24,6 +29,8 @@ import { SidenavHeaderComponent } from './sidenav-header/sidenav-header.componen
   styleUrl: './sidenav.component.scss',
 })
 export class SidenavComponent {
+  notebookService = inject(NotebookService);
+
   /**
    * 側邊欄收合狀態（由父元件傳入）
    * 使用 input() signal 接收資料

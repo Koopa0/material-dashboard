@@ -1,0 +1,44 @@
+<div class="command-palette">
+  <div class="search-box">
+    <mat-icon class="search-icon">search</mat-icon>
+    <input
+      type="text"
+      class="search-input"
+      placeholder="搜尋文檔或執行命令..."
+      [(ngModel)]="searchQuery"
+      autofocus
+    />
+    <kbd class="shortcut">ESC</kbd>
+  </div>
+
+  <mat-nav-list class="results-list">
+    @if (filteredItems().length === 0) {
+      <div class="no-results">
+        <mat-icon>search_off</mat-icon>
+        <p>找不到相關結果</p>
+      </div>
+    } @else {
+      @for (item of filteredItems(); track item.id; let idx = $index) {
+        <mat-list-item
+          class="result-item"
+          [class.selected]="selectedIndex() === idx"
+          (click)="selectItem(idx)"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <div matListItemTitle>{{ item.title }}</div>
+          @if (item.subtitle) {
+            <div matListItemLine class="subtitle">{{ item.subtitle }}</div>
+          }
+        </mat-list-item>
+      }
+    }
+  </mat-nav-list>
+
+  <div class="footer">
+    <div class="tip">
+      <kbd>↑</kbd><kbd>↓</kbd> 導航
+      <kbd>Enter</kbd> 選擇
+      <kbd>ESC</kbd> 關閉
+    </div>
+  </div>
+</div>
