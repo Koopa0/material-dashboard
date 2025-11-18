@@ -622,6 +622,11 @@ export class KnowledgeBaseService {
    */
   setPage(page: number): void {
     const total = this.totalPages();
+    // 如果 total 為 0，表示沒有資料，允許設為第 1 頁
+    if (total === 0) {
+      this.currentPage.set(1);
+      return;
+    }
     if (page >= 1 && page <= total) {
       this.currentPage.set(page);
     }

@@ -181,65 +181,109 @@
   padding: 64px 24px;
   color: var(--color-text-secondary);
 
-  .empty-icon {
-    font-size: 80px;
-    width: 80px;
-    height: 80px;
-    color: var(--color-primary);
-    opacity: 0.5;
+  .empty-icon-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 24px;
+
+    .empty-icon {
+      font-size: 96px;
+      width: 96px;
+      height: 96px;
+      color: var(--color-primary);
+      opacity: 0.6;
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
   }
 
   h2 {
-    font-size: 24px;
-    font-weight: 500;
-    color: var(--color-text);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--color-on-surface);
     margin-bottom: 12px;
   }
 
   p {
     font-size: 16px;
     color: var(--color-text-secondary);
-    margin-bottom: 32px;
+    margin-bottom: 40px;
   }
 
   .search-tips {
-    max-width: 500px;
+    max-width: 600px;
     margin: 0 auto;
     text-align: left;
-    padding: 24px;
-    background: var(--color-surface);
-    border-radius: 8px;
-    border: 1px solid var(--color-divider);
 
-    h3 {
-      font-size: 16px;
-      font-weight: 500;
-      color: var(--color-text);
-      margin-bottom: 12px;
+    mat-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+
+      .tip-icon {
+        color: var(--color-accent);
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+
+      mat-card-title {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--color-on-surface);
+      }
     }
 
     ul {
       list-style: none;
       padding: 0;
       margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
 
       li {
-        padding: 8px 0;
-        padding-left: 24px;
-        position: relative;
-        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 15px;
         line-height: 1.6;
+        color: var(--color-on-surface);
 
-        &::before {
-          content: '✓';
-          position: absolute;
-          left: 0;
-          color: var(--color-primary);
-          font-weight: bold;
+        mat-icon {
+          color: var(--color-success);
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+          flex-shrink: 0;
+        }
+
+        span {
+          flex: 1;
         }
       }
     }
+  }
+}
+
+// Pulse glow animation for empty icon
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+// Dark mode glow effect
+body[data-theme='dark'] {
+  .empty-icon-wrapper .empty-icon {
+    filter: drop-shadow(0 0 20px var(--color-primary));
   }
 }
 
@@ -262,18 +306,22 @@
   .empty-state {
     padding: 32px 16px;
 
-    .empty-icon {
-      font-size: 60px;
-      width: 60px;
-      height: 60px;
+    .empty-icon-wrapper .empty-icon {
+      font-size: 72px;
+      width: 72px;
+      height: 72px;
     }
 
     h2 {
-      font-size: 20px;
+      font-size: 22px;
     }
 
     p {
       font-size: 14px;
+    }
+
+    .search-tips {
+      max-width: 100%;
     }
   }
 }

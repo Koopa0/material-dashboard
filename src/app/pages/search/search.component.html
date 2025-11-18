@@ -32,13 +32,13 @@
 
       @if (showResults() && searchResults().length > 0) {
         <p class="search-info">
-          <mat-icon class="info-icon">info</mat-icon>
+          <mat-icon class="info-icon">check_circle</mat-icon>
           找到 <strong>{{ searchResults().length }}</strong> 個結果
           <span class="latency">（{{ searchLatency() }}ms）</span>
         </p>
       } @else if (showResults() && searchResults().length === 0) {
         <p class="search-info no-results">
-          <mat-icon class="info-icon">search_off</mat-icon>
+          <mat-icon class="info-icon">info</mat-icon>
           沒有找到符合「<strong>{{ searchQuery() }}</strong>」的結果
         </p>
       }
@@ -95,17 +95,33 @@
     } @else {
       <!-- 初始狀態提示 -->
       <div class="empty-state">
-        <mat-icon class="empty-icon">search</mat-icon>
+        <div class="empty-icon-wrapper">
+          <mat-icon class="empty-icon">manage_search</mat-icon>
+        </div>
         <h2>開始搜尋您的知識庫</h2>
         <p>輸入關鍵字以即時搜尋 {{ knowledgeBase.documents().length }} 篇文檔</p>
-        <div class="search-tips">
-          <h3>搜尋技巧：</h3>
-          <ul>
-            <li>支援標題、內容、標籤、分類搜尋</li>
-            <li>即時顯示結果，無需按下搜尋按鈕</li>
-            <li>依相關性自動排序</li>
-          </ul>
-        </div>
+        <mat-card class="search-tips gemini-card">
+          <mat-card-header>
+            <mat-icon class="tip-icon">tips_and_updates</mat-icon>
+            <mat-card-title>搜尋技巧</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <ul>
+              <li>
+                <mat-icon>check</mat-icon>
+                <span>支援標題、內容、標籤、分類搜尋</span>
+              </li>
+              <li>
+                <mat-icon>check</mat-icon>
+                <span>即時顯示結果，無需按下搜尋按鈕</span>
+              </li>
+              <li>
+                <mat-icon>check</mat-icon>
+                <span>依相關性自動排序</span>
+              </li>
+            </ul>
+          </mat-card-content>
+        </mat-card>
       </div>
     }
   </div>
