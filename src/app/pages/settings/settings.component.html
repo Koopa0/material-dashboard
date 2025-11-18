@@ -1,5 +1,7 @@
 <div class="settings-page">
-  <h1>系統設定</h1>
+  <h1>
+    <span class="gradient-text">系統設定</span>
+  </h1>
 
   <!-- 一般設定 -->
   <mat-card class="settings-card">
@@ -13,14 +15,6 @@
           <p>自動儲存變更到本地儲存</p>
         </div>
         <mat-slide-toggle [(ngModel)]="settings.autoSave"></mat-slide-toggle>
-      </div>
-
-      <div class="setting-item">
-        <div class="setting-info">
-          <h3>深色模式</h3>
-          <p>啟用深色主題</p>
-        </div>
-        <mat-slide-toggle [(ngModel)]="settings.darkMode"></mat-slide-toggle>
       </div>
 
       <div class="setting-item">
