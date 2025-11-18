@@ -319,83 +319,46 @@ body[data-theme='dark'] {
 
   /**
    * 根元素轉場
-   * 預設的淡入淡出 + 輕微縮放效果
+   * 極簡淡入淡出，避免側邊欄和 header 看起來像刷新
    */
   ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation-duration: 300ms;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-duration: 150ms;
+    animation-timing-function: ease-in-out;
   }
 
   /**
-   * 舊頁面退出動畫
-   * 淡出 + 輕微縮小
+   * 舊頁面退出動畫 - 只有淡出
    */
   ::view-transition-old(root) {
-    animation-name: fade-out-scale;
+    animation-name: simple-fade-out;
   }
 
   /**
-   * 新頁面進入動畫
-   * 淡入 + 輕微放大
+   * 新頁面進入動畫 - 只有淡入
    */
   ::view-transition-new(root) {
-    animation-name: fade-in-scale;
+    animation-name: simple-fade-in;
   }
 
   /**
-   * 自訂轉場動畫
-   * 可在特定路由使用不同動畫
+   * 簡單的淡入淡出動畫（無縮放效果）
    */
-  @keyframes fade-out-scale {
+  @keyframes simple-fade-out {
     from {
       opacity: 1;
-      transform: scale(1);
     }
     to {
       opacity: 0;
-      transform: scale(0.95);
     }
   }
 
-  @keyframes fade-in-scale {
+  @keyframes simple-fade-in {
     from {
       opacity: 0;
-      transform: scale(1.05);
     }
     to {
       opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  /**
-   * 滑動效果（可選）
-   * 適用於上下頁面導航
-   */
-  @keyframes slide-from-right {
-    from {
-      transform: translateX(100%);
-    }
-    to {
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes slide-to-left {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-100%);
-    }
-  }
-
-  // 深色主題的轉場增強（發光效果）
-  body[data-theme='dark'] {
-    ::view-transition-old(root),
-    ::view-transition-new(root) {
-      filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.3));
     }
   }
 }

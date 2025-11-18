@@ -29,11 +29,12 @@
 
 // 聊天窗口
 .chat-window {
-  position: absolute;
-  bottom: 80px;
-  right: 0;
+  position: fixed;
+  top: 100px;
+  right: 24px;
   width: 400px;
-  max-height: 600px;
+  height: calc(100vh - 140px);
+  max-height: 700px;
   background: var(--color-surface);
   border-radius: 16px;
   box-shadow: var(--shadow-xl);
