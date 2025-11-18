@@ -4,7 +4,7 @@
  * 提供文檔的CRUD功能和進階表格顯示
  * 展示 Angular CDK Table 和 Signals 的整合使用
  */
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,7 +13,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
 import { KnowledgeBaseService } from '../../services/knowledge-base.service';
@@ -38,7 +38,10 @@ import { Document, TechnologyCategory } from '../../models';
   templateUrl: './documents.component.html',
   styleUrl: './documents.component.scss',
 })
-export class DocumentsComponent {
+export class DocumentsComponent implements AfterViewInit {
+  /** 分頁器引用 */
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   /** 知識庫服務 */
   knowledgeBase = inject(KnowledgeBaseService);
 
@@ -62,6 +65,16 @@ export class DocumentsComponent {
 
   /** 分頁選項 */
   pageSizeOptions = [10, 20, 50, 100];
+
+  ngAfterViewInit(): void {
+    console.log('📄 Documents 組件初始化');
+    console.log('📊 分頁器狀態:', this.paginator);
+    if (this.paginator) {
+      console.log('✅ 分頁器已正確掛載');
+    } else {
+      console.error('❌ 分頁器未找到！');
+    }
+  }
 
   /**
    * 查看文檔詳情
@@ -115,6 +128,7 @@ export class DocumentsComponent {
    * 分頁變更
    */
   onPageChange(event: any): void {
+    console.log('🔄 分頁變更事件觸發！');
     console.log('Page change event:', event);
     console.log('Setting page to:', event.pageIndex + 1);
     console.log('Setting page size to:', event.pageSize);
