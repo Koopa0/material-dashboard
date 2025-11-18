@@ -2,9 +2,28 @@
   position: relative;
 }
 
+// Gemini 風格的 Toolbar
+.app-toolbar {
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  border-bottom: 1px solid var(--color-border);
+  transition: all var(--transition-base) ease;
+
+  .toolbar-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 0 16px;
+  }
+
+  .toolbar-spacer {
+    flex: 1 1 auto;
+  }
+}
+
 .content {
   padding: 24px;
   box-sizing: border-box;
+  background: var(--color-background);
 }
 
 mat-sidenav-container {

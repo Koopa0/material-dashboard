@@ -5,6 +5,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { MatButtonModule } from '@angular/material/button';
+import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatButtonModule,
     SidenavComponent,
     MatToolbar,
+    ThemeToggleComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

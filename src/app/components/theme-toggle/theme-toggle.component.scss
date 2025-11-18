@@ -1,0 +1,78 @@
+/**
+ * 主題切換器樣式
+ *
+ * Gemini 風格的動畫效果：
+ * - 平滑旋轉動畫
+ * - 懸停發光效果（深色主題）
+ * - 顏色漸變
+ */
+
+.theme-toggle-button {
+  position: relative;
+  overflow: visible;
+  transition: all var(--transition-base, 200ms) ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  // 深色主題的發光效果
+  body[data-theme='dark'] &:hover {
+    .theme-icon {
+      filter: drop-shadow(0 0 8px var(--color-primary));
+    }
+  }
+}
+
+.theme-icon {
+  transition: all var(--transition-slow, 300ms) ease;
+  color: var(--color-on-surface);
+
+  // 點擊時旋轉動畫
+  .theme-toggle-button:active & {
+    transform: rotate(180deg);
+  }
+
+  // 淺色主題的圖示顏色（太陽）
+  body[data-theme='light'] & {
+    color: #f59e0b; // 金黃色太陽
+  }
+
+  // 深色主題的圖示顏色（月亮）
+  body[data-theme='dark'] & {
+    color: #a78bfa; // 紫色月亮
+  }
+}
+
+// 平滑的主題切換動畫
+:host {
+  display: inline-block;
+
+  // 進場動畫
+  animation: fade-in var(--transition-base, 200ms) ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// 按鈕懸停時的脈衝動畫
+.theme-toggle-button:hover .theme-icon {
+  animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
