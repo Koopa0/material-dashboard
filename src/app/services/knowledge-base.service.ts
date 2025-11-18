@@ -676,7 +676,11 @@ export class KnowledgeBaseService {
    * 設定每頁顯示數量
    */
   setPageSize(size: number): void {
-    this.pageSize.set(size);
-    this.currentPage.set(1); // 重置到第一頁
+    const currentSize = this.pageSize();
+    // 只在頁面大小真正改變時才重置到第一頁
+    if (size !== currentSize) {
+      this.pageSize.set(size);
+      this.currentPage.set(1);
+    }
   }
 }
