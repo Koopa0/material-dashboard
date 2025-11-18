@@ -1,6 +1,12 @@
+/**
+ * 側邊欄導航元件
+ *
+ * 提供應用程式的主要導航介面
+ * 使用 Angular v20 Signals 管理選單項目狀態
+ */
 import { Component, input, signal } from '@angular/core';
 import { MatListModule, MatNavList } from '@angular/material/list';
-import { MenuItem } from '../../models/menu-item';
+import { MenuItem } from '../../models/menu-item.model';
 import { MenuItemComponent } from '../menu-item/menu-item.component';
 import { MatIconModule } from '@angular/material/icon';
 import { SidenavHeaderComponent } from './sidenav-header/sidenav-header.component';
@@ -18,28 +24,41 @@ import { SidenavHeaderComponent } from './sidenav-header/sidenav-header.componen
   styleUrl: './sidenav.component.scss',
 })
 export class SidenavComponent {
+  /**
+   * 側邊欄收合狀態（由父元件傳入）
+   * 使用 input() signal 接收資料
+   */
   collapseDrawer = input<boolean>(false);
 
+  /**
+   * 選單項目列表
+   * RAG 知識庫管理系統的主要導航項目
+   */
   menuItems = signal<MenuItem[]>([
     {
-      name: 'Dashboard',
       icon: 'dashboard',
+      label: 'Dashboard',
       route: 'dashboard',
     },
     {
-      name: 'Content',
-      icon: 'video_library',
-      route: 'content',
+      icon: 'description',
+      label: 'Documents',
+      route: 'documents',
     },
     {
-      name: 'Analytics',
+      icon: 'search',
+      label: 'Search',
+      route: 'search',
+    },
+    {
       icon: 'analytics',
+      label: 'Analytics',
       route: 'analytics',
     },
     {
-      name: 'Comments',
-      icon: 'comments',
-      route: 'comments',
+      icon: 'settings',
+      label: 'Settings',
+      route: 'settings',
     },
   ]);
 }

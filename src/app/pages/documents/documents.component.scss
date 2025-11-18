@@ -1,0 +1,50 @@
+.documents-page {
+  padding: 24px;
+
+  h1 {
+    margin-bottom: 24px;
+  }
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  .search-field {
+    flex: 2;
+  }
+
+  .category-filter {
+    flex: 1;
+  }
+}
+
+.stats {
+  margin-bottom: 16px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.documents-table {
+  width: 100%;
+
+  .tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .more-tags {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  mat-chip {
+    font-size: 12px;
+  }
+}

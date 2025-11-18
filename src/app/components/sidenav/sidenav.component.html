@@ -1,6 +1,9 @@
+<!-- 側邊欄標頭 -->
 <app-sidenav-header [collapseDrawer]="collapseDrawer()" />
+
+<!-- 導航選單列表 -->
 <mat-nav-list class="[--mat-list-active-indicator-shape:0px] mb-6">
-  @for (item of menuItems(); track item.name) {
+  @for (item of menuItems(); track item.label) {
     <app-menu-item [item]="item" [collapseDrawer]="collapseDrawer()" />
   }
 </mat-nav-list>
