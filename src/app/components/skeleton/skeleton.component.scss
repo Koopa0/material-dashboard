@@ -1,0 +1,191 @@
+/**
+ * 骨架屏載入組件樣式
+ *
+ * Gemini 風格的載入動畫：
+ * - 平滑的脈衝效果
+ * - 漸層色彩（深色主題特有）
+ * - 柔和的邊框
+ */
+
+/**
+ * 基礎骨架屏樣式
+ */
+.skeleton {
+  background: var(--color-surface-variant);
+  border-radius: var(--radius-sm);
+  position: relative;
+  overflow: hidden;
+
+  /**
+   * 深色主題使用漸層背景
+   */
+  body[data-theme='dark'] & {
+    background: linear-gradient(
+      90deg,
+      var(--color-surface) 0%,
+      var(--color-surface-variant) 50%,
+      var(--color-surface) 100%
+    );
+    background-size: 200% 100%;
+  }
+}
+
+/**
+ * 文字骨架屏
+ */
+.skeleton-text {
+  height: 16px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+
+  &:last-child {
+    margin-bottom: 0;
+    width: 80% !important; // 最後一行較短
+  }
+}
+
+.skeleton-text-container {
+  width: 100%;
+
+  .skeleton-text {
+    width: 100%;
+  }
+}
+
+/**
+ * 卡片骨架屏
+ */
+.skeleton-card {
+  width: 100%;
+  height: 300px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+
+  .skeleton-card-image {
+    width: 100%;
+    height: 180px;
+    background: var(--color-surface-hover);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .skeleton-card-content {
+    padding: 16px;
+    flex: 1;
+  }
+}
+
+/**
+ * 圓形骨架屏（頭像）
+ */
+.skeleton-circle {
+  border-radius: var(--radius-full);
+  width: 48px;
+  height: 48px;
+}
+
+/**
+ * 矩形骨架屏
+ */
+.skeleton-rect {
+  width: 100%;
+  height: 200px;
+}
+
+/**
+ * 頭像 + 文字組合
+ */
+.skeleton-avatar-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .skeleton-avatar-text {
+    flex: 1;
+  }
+}
+
+/**
+ * ==================== 動畫 ====================
+ */
+
+/**
+ * Gemini 風格的脈衝動畫
+ * 淺色主題：opacity 變化
+ * 深色主題：漸層移動
+ */
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-animated {
+  // 淺色主題：脈衝動畫
+  body[data-theme='light'] & {
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+  }
+
+  // 深色主題：漸層移動動畫
+  body[data-theme='dark'] & {
+    animation: skeleton-shimmer 2s linear infinite;
+  }
+}
+
+/**
+ * ==================== 響應式設計 ====================
+ */
+@media (max-width: 768px) {
+  .skeleton-card {
+    height: 250px;
+
+    .skeleton-card-image {
+      height: 140px;
+    }
+  }
+
+  .skeleton-circle {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/**
+ * ==================== 特殊效果 ====================
+ */
+
+/**
+ * 深色主題的發光效果（hover）
+ */
+body[data-theme='dark'] {
+  .skeleton:hover {
+    box-shadow: 0 0 20px rgba(167, 139, 250, 0.2);
+  }
+}
+
+/**
+ * 無障礙支援
+ */
+.skeleton {
+  // 確保螢幕閱讀器知道這是載入中
+  &::before {
+    content: '載入中...';
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+}

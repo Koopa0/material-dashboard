@@ -302,3 +302,113 @@ body[data-theme='dark'] {
   background-size: 200% 200%;
   animation: gradient-shift 3s ease infinite;
 }
+
+/**
+ * ==================== View Transitions 動畫 ====================
+ * Angular Router 頁面切換動畫（Gemini 風格）
+ *
+ * 使用 View Transitions API 實現流暢的頁面轉場
+ */
+
+// 瀏覽器支援檢測
+@supports (view-transition-name: none) {
+
+  /**
+   * 根元素轉場
+   * 預設的淡入淡出 + 輕微縮放效果
+   */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 300ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /**
+   * 舊頁面退出動畫
+   * 淡出 + 輕微縮小
+   */
+  ::view-transition-old(root) {
+    animation-name: fade-out-scale;
+  }
+
+  /**
+   * 新頁面進入動畫
+   * 淡入 + 輕微放大
+   */
+  ::view-transition-new(root) {
+    animation-name: fade-in-scale;
+  }
+
+  /**
+   * 自訂轉場動畫
+   * 可在特定路由使用不同動畫
+   */
+  @keyframes fade-out-scale {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+
+  @keyframes fade-in-scale {
+    from {
+      opacity: 0;
+      transform: scale(1.05);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /**
+   * 滑動效果（可選）
+   * 適用於上下頁面導航
+   */
+  @keyframes slide-from-right {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slide-to-left {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  // 深色主題的轉場增強（發光效果）
+  body[data-theme='dark'] {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      filter: drop-shadow(0 0 20px rgba(167, 139, 250, 0.3));
+    }
+  }
+}
+
+// Fallback：不支援 View Transitions 的瀏覽器
+@supports not (view-transition-name: none) {
+  // 使用簡單的 opacity 動畫
+  router-outlet ~ * {
+    animation: simple-fade-in 300ms ease;
+  }
+
+  @keyframes simple-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}

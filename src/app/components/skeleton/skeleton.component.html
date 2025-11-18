@@ -1,0 +1,54 @@
+<!--
+  骨架屏載入組件模板
+
+  根據類型顯示不同的骨架屏
+-->
+
+<!-- 文字骨架屏 -->
+@if (type() === 'text') {
+  <div class="skeleton-text-container">
+    @for (item of getCountArray(); track $index) {
+      <div
+        [class]="getSkeletonClass()"
+        [style]="getSkeletonStyle()"
+      ></div>
+    }
+  </div>
+}
+
+<!-- 卡片骨架屏 -->
+@else if (type() === 'card') {
+  <div
+    [class]="getSkeletonClass()"
+    [style]="getSkeletonStyle()"
+  >
+    <div class="skeleton-card-image"></div>
+    <div class="skeleton-card-content">
+      <div class="skeleton skeleton-text skeleton-animated" style="width: 70%; margin-bottom: 12px;"></div>
+      <div class="skeleton skeleton-text skeleton-animated" style="width: 90%;"></div>
+      <div class="skeleton skeleton-text skeleton-animated" style="width: 60%;"></div>
+    </div>
+  </div>
+}
+
+<!-- 頭像骨架屏 -->
+@else if (type() === 'avatar') {
+  <div class="skeleton-avatar-container">
+    <div
+      class="skeleton skeleton-circle skeleton-animated"
+      [style]="{ width: size(), height: size() }"
+    ></div>
+    <div class="skeleton-avatar-text">
+      <div class="skeleton skeleton-text skeleton-animated" style="width: 120px; margin-bottom: 8px;"></div>
+      <div class="skeleton skeleton-text skeleton-animated" style="width: 80px;"></div>
+    </div>
+  </div>
+}
+
+<!-- 圓形/矩形骨架屏 -->
+@else {
+  <div
+    [class]="getSkeletonClass()"
+    [style]="getSkeletonStyle()"
+  ></div>
+}
