@@ -57,8 +57,10 @@ export class SearchComponent {
       return [];
     }
 
+    console.log('🔍 搜尋關鍵字:', query);
     const startTime = performance.now();
     const allDocs = this.knowledgeBase.documents();
+    console.log('📚 可搜尋文檔總數:', allDocs.length);
 
     // 過濾並計算相關性分數
     const results = allDocs
@@ -72,6 +74,14 @@ export class SearchComponent {
 
     const endTime = performance.now();
     this.searchLatency.set(Math.round(endTime - startTime));
+
+    console.log('✅ 找到結果:', results.length, '筆');
+    if (results.length > 0) {
+      console.log('📄 前 3 筆結果:', results.slice(0, 3).map(r => ({
+        title: r.title,
+        score: r.relevanceScore
+      })));
+    }
 
     return results;
   });
