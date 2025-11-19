@@ -17,7 +17,7 @@ export enum QueryType {
 }
 
 /**
- * 查詢記錄介面
+ * 查詢記錄介面（Angular v20 最佳實踐：完整類型定義）
  * 儲存使用者的搜尋歷史
  */
 export interface QueryRecord {
@@ -41,6 +41,9 @@ export interface QueryRecord {
 
   /** 是否找到相關結果 */
   hasResults: boolean;
+
+  /** 相關主題標籤（用於分析統計） */
+  relatedTopics: string[];
 
   /** 使用者選擇的結果 ID */
   selectedDocumentId?: string;

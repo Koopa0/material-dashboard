@@ -84,9 +84,10 @@ export class SkeletonComponent {
   }
 
   /**
-   * 取得骨架屏樣式
+   * 取得骨架屏樣式（類型安全）
+   * Angular v20 最佳實踐：明確定義返回類型
    */
-  getSkeletonStyle(): any {
+  getSkeletonStyle(): Record<string, string | undefined> {
     const type = this.type();
 
     if (type === 'circle') {

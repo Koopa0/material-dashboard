@@ -56,15 +56,22 @@ export class NotebookService {
   }
 
   /**
-   * 初始化預設筆記本
+   * 初始化預設筆記本（類型安全）
+   * Angular v20 最佳實踐：避免使用 any
    */
   private getInitialNotebooks(): Notebook[] {
     // 嘗試從 localStorage 讀取
     const stored = localStorage.getItem('notebooks');
     if (stored) {
       try {
-        const parsed = JSON.parse(stored);
-        return parsed.map((nb: any) => ({
+        // 定義序列化後的 Notebook 結構
+        interface SerializedNotebook extends Omit<Notebook, 'createdAt' | 'updatedAt'> {
+          createdAt: string;
+          updatedAt: string;
+        }
+
+        const parsed: SerializedNotebook[] = JSON.parse(stored);
+        return parsed.map((nb) => ({
           ...nb,
           createdAt: new Date(nb.createdAt),
           updatedAt: new Date(nb.updatedAt),

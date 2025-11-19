@@ -14,7 +14,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { FormsModule } from '@angular/forms';
@@ -135,9 +135,10 @@ export class DocumentsComponent implements AfterViewInit {
   }
 
   /**
-   * 分頁變更
+   * 分頁變更（類型安全）
+   * Angular v20 最佳實踐：使用正確的 Material 類型
    */
-  onPageChange(event: any): void {
+  onPageChange(event: PageEvent): void {
     console.log('🔄 分頁變更事件觸發！');
     console.log('Page change event:', event);
     console.log('Setting page to:', event.pageIndex + 1);

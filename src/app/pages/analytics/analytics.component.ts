@@ -13,6 +13,7 @@ import { MatCardModule } from '@angular/material/card';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { KnowledgeBaseService } from '../../services/knowledge-base.service';
 import { TechnologyCategory } from '../../models/document.model';
+import { QueryRecord } from '../../models/query.model';
 import { ThemeService } from '../../services/theme.service';
 
 // 註冊 Chart.js 所有模組
@@ -121,8 +122,8 @@ export class AnalyticsComponent {
       const dateStr = `${date.getMonth() + 1}/${date.getDate()}`;
       labels.push(dateStr);
 
-      // 計算當天的查詢數量
-      const count = queries.filter((q: any) => {
+      // 計算當天的查詢數量（類型安全）
+      const count = queries.filter((q: QueryRecord) => {
         const qDate = new Date(q.timestamp);
         return qDate.toDateString() === date.toDateString();
       }).length;
@@ -149,9 +150,9 @@ export class AnalyticsComponent {
   topQueriesData = computed(() => {
     const queries = this.knowledgeBase.queryRecords();
 
-    // 統計各主題的查詢次數
+    // 統計各主題的查詢次數（類型安全）
     const topicCounts = new Map<string, number>();
-    queries.forEach((q: any) => {
+    queries.forEach((q: QueryRecord) => {
       q.relatedTopics.forEach((topic: string) => {
         topicCounts.set(topic, (topicCounts.get(topic) || 0) + 1);
       });

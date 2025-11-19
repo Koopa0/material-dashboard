@@ -502,7 +502,8 @@ export class KnowledgeBaseService {
   }
 
   /**
-   * 記錄查詢
+   * 記錄查詢（類型安全）
+   * Angular v20 最佳實踐：完整的類型定義
    */
   private recordQuery(params: {
     query: string;
@@ -510,6 +511,23 @@ export class KnowledgeBaseService {
     resultCount: number;
     latency: number;
   }): void {
+    // 從查詢中提取相關主題（簡單的關鍵字匹配）
+    const relatedTopics: string[] = [];
+    const queryLower = params.query.toLowerCase();
+
+    // 檢查技術類別關鍵字
+    const categories = Object.values(TechnologyCategory);
+    categories.forEach(category => {
+      if (queryLower.includes(category.toLowerCase())) {
+        relatedTopics.push(category);
+      }
+    });
+
+    // 如果沒有匹配到類別，使用查詢本身作為主題
+    if (relatedTopics.length === 0 && params.query.trim()) {
+      relatedTopics.push(params.query.trim());
+    }
+
     const queryRecord: QueryRecord = {
       id: this.generateId(),
       query: params.query,
@@ -518,6 +536,7 @@ export class KnowledgeBaseService {
       resultCount: params.resultCount,
       latency: params.latency,
       hasResults: params.resultCount > 0,
+      relatedTopics,
     };
 
     this.queryRecordsSignal.update((records) => [queryRecord, ...records]);
