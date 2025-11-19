@@ -170,7 +170,7 @@
 }
 
 // 深色模式下的高亮調整
-:host-context(.dark-theme) ::ng-deep .highlight {
+:host-context(body[data-theme='dark']) ::ng-deep .highlight {
   background: var(--color-primary);
   box-shadow: var(--glow-primary);
 }

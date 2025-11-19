@@ -433,7 +433,7 @@
 }
 
 // 深色模式調整
-:host-context(.dark-theme) {
+:host-context(body[data-theme='dark']) {
   .chat-fab {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), var(--glow-primary);
   }

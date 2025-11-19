@@ -56,6 +56,11 @@ export class NotebookService {
   private selectedNotebookIdSignal = signal<string | null>(null);
 
   /**
+   * 搜尋關鍵字 Signal
+   */
+  searchQuery = signal<string>('');
+
+  /**
    * 唯讀筆記本列表
    */
   readonly notebooks = this.notebooksSignal.asReadonly();

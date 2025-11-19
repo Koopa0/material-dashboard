@@ -1,10 +1,13 @@
 @if (item().subItems && item().subItems!.length > 0) {
   <!-- 可展開的選單項目 -->
-  <div
+  <a
     mat-list-item
     class="expandable-menu-item"
     [class.expanded]="expanded()"
-    (click)="toggleExpanded()"
+    [routerLink]="item().route"
+    routerLinkActive="selected-menu-item"
+    #rla="routerLinkActive"
+    [activated]="rla.isActive"
   >
     <mat-icon matListItemIcon>{{ item().icon }}</mat-icon>
     @if (!collapseDrawer()) {
@@ -18,7 +21,7 @@
         <mat-icon>{{ expanded() ? 'expand_less' : 'expand_more' }}</mat-icon>
       </button>
     }
-  </div>
+  </a>
 
   <!-- 子項目列表 -->
   @if (expanded() && !collapseDrawer()) {
@@ -49,11 +52,8 @@
     #rla="routerLinkActive"
     [activated]="rla.isActive"
   >
-    <!-- 圖示：啟用時顯示實心圖示，未啟用時顯示空心圖示 -->
-    <mat-icon
-      [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
-      matListItemIcon
-    >
+    <!-- 圖示：統一使用填滿樣式 -->
+    <mat-icon matListItemIcon>
       {{ item().icon }}
     </mat-icon>
 

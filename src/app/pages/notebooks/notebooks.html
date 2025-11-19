@@ -1,0 +1,107 @@
+<div class="notebooks-page">
+  <h1>
+    <span class="gradient-text">Notebooks</span>
+  </h1>
+
+  <!-- 操作列 -->
+  <div class="toolbar">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>搜尋 Notebook</mat-label>
+      <input
+        matInput
+        [ngModel]="searchQuery()"
+        (ngModelChange)="onSearchChange($event)"
+        placeholder="名稱、描述..."
+      />
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="createNotebook()">
+      <mat-icon>add</mat-icon>
+      新增 Notebook
+    </button>
+  </div>
+
+  <!-- 統計資訊 -->
+  <div class="stats">
+    <p>
+      共有 <strong>{{ notebooks().length }}</strong> 個 Notebook
+    </p>
+  </div>
+
+  <!-- Notebooks 網格 -->
+  @if (notebooks().length > 0) {
+    <div class="notebooks-grid">
+      @for (notebook of notebooks(); track notebook.id) {
+        <mat-card class="notebook-card gemini-card" (click)="viewNotebook(notebook)">
+          <mat-card-content>
+            <div class="card-header">
+              <mat-icon
+                class="notebook-icon"
+                [style.color]="getNotebookColor(notebook)"
+              >
+                {{ notebook.icon }}
+              </mat-icon>
+              <button
+                mat-icon-button
+                [matMenuTriggerFor]="notebookMenu"
+                (click)="$event.stopPropagation()"
+                matTooltip="更多操作"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+
+              <mat-menu #notebookMenu="matMenu">
+                <button mat-menu-item (click)="editNotebook(notebook, $event)">
+                  <mat-icon>edit</mat-icon>
+                  <span>編輯</span>
+                </button>
+                @if (!notebook.isDefault) {
+                  <button mat-menu-item (click)="deleteNotebook(notebook, $event)">
+                    <mat-icon>delete</mat-icon>
+                    <span>刪除</span>
+                  </button>
+                }
+              </mat-menu>
+            </div>
+
+            <h3 class="notebook-name">{{ notebook.name }}</h3>
+
+            @if (notebook.description) {
+              <p class="notebook-description">{{ notebook.description }}</p>
+            }
+
+            <div class="notebook-meta">
+              <div class="meta-item">
+                <mat-icon>description</mat-icon>
+                <span>{{ getDocumentCount(notebook) }} 篇文檔</span>
+              </div>
+              <div class="meta-item">
+                <mat-icon>schedule</mat-icon>
+                <span>{{ formatDate(notebook.updatedAt) }}</span>
+              </div>
+            </div>
+
+            @if (notebook.isDefault) {
+              <div class="default-badge">
+                <mat-icon>push_pin</mat-icon>
+                <span>預設</span>
+              </div>
+            }
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  } @else {
+    <!-- 空狀態 -->
+    <div class="empty-state">
+      <mat-icon>auto_stories</mat-icon>
+      <h2>尚無 Notebook</h2>
+      <p>建立你的第一個 Notebook 來組織文檔</p>
+      <button mat-raised-button color="primary" (click)="createNotebook()">
+        <mat-icon>add</mat-icon>
+        新增 Notebook
+      </button>
+    </div>
+  }
+</div>

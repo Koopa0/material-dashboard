@@ -77,6 +77,7 @@ export class SidenavComponent {
       {
         icon: 'auto_stories',
         label: 'Notebooks',
+        route: 'notebooks',
         subItems: notebookSubItems,
       },
       {
