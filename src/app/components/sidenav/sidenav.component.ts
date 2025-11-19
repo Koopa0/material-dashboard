@@ -4,7 +4,7 @@
  * 提供應用程式的主要導航介面
  * 使用 Angular v20 Signals 管理選單項目狀態
  */
-import { Component, input, signal, inject } from '@angular/core';
+import { Component, input, signal, inject, computed, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatListModule, MatNavList } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
@@ -51,34 +51,49 @@ export class SidenavComponent {
   /**
    * 選單項目列表
    * RAG 知識庫管理系統的主要導航項目
+   * 使用 computed 動態生成 Notebooks 子項目
    */
-  menuItems = signal<MenuItem[]>([
-    {
-      icon: 'dashboard',
-      label: 'Dashboard',
-      route: 'dashboard',
-    },
-    {
-      icon: 'description',
-      label: 'Documents',
-      route: 'documents',
-    },
-    {
-      icon: 'search',
-      label: 'Search',
-      route: 'search',
-    },
-    {
-      icon: 'analytics',
-      label: 'Analytics',
-      route: 'analytics',
-    },
-    {
-      icon: 'settings',
-      label: 'Settings',
-      route: 'settings',
-    },
-  ]);
+  menuItems = computed<MenuItem[]>(() => {
+    const notebookSubItems = this.notebookService.notebooks().map((notebook) => ({
+      icon: notebook.icon,
+      label: notebook.name,
+      route: `/notebooks/${notebook.id}`,
+      badge: this.getNotebookColor(notebook),
+    }));
+
+    return [
+      {
+        icon: 'dashboard',
+        label: 'Dashboard',
+        route: 'dashboard',
+      },
+      {
+        icon: 'description',
+        label: 'Documents',
+        route: 'documents',
+      },
+      {
+        icon: 'auto_stories',
+        label: 'Notebooks',
+        subItems: notebookSubItems,
+      },
+      {
+        icon: 'search',
+        label: 'Search',
+        route: 'search',
+      },
+      {
+        icon: 'analytics',
+        label: 'Analytics',
+        route: 'analytics',
+      },
+      {
+        icon: 'settings',
+        label: 'Settings',
+        route: 'settings',
+      },
+    ];
+  });
 
   /** 取得 Notebook 顏色 */
   getNotebookColor(notebook: Notebook): string {

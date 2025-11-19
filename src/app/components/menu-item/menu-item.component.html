@@ -1,21 +1,65 @@
-<!-- 選單項目連結 -->
-<a
-  mat-list-item
-  [routerLink]="item().route"
-  routerLinkActive="selected-menu-item"
-  #rla="routerLinkActive"
-  [activated]="rla.isActive"
->
-  <!-- 圖示：啟用時顯示實心圖示，未啟用時顯示空心圖示 -->
-  <mat-icon
-    [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
-    matListItemIcon
+@if (item().subItems && item().subItems!.length > 0) {
+  <!-- 可展開的選單項目 -->
+  <div
+    mat-list-item
+    class="expandable-menu-item"
+    [class.expanded]="expanded()"
+    (click)="toggleExpanded()"
   >
-    {{ item().icon }}
-  </mat-icon>
+    <mat-icon matListItemIcon>{{ item().icon }}</mat-icon>
+    @if (!collapseDrawer()) {
+      <span matListItemTitle>{{ item().label }}</span>
+      <button
+        mat-icon-button
+        matListItemMeta
+        class="expand-icon"
+        (click)="$event.stopPropagation(); toggleExpanded()"
+      >
+        <mat-icon>{{ expanded() ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </button>
+    }
+  </div>
 
-  <!-- 標籤文字：側邊欄展開時才顯示 -->
-  @if (!collapseDrawer()) {
-    <span matListItemTitle>{{ item().label }}</span>
+  <!-- 子項目列表 -->
+  @if (expanded() && !collapseDrawer()) {
+    <div class="sub-items">
+      @for (subItem of item().subItems; track $index) {
+        <a
+          mat-list-item
+          class="sub-menu-item"
+          [routerLink]="subItem.route"
+          routerLinkActive="selected-sub-item"
+          #subRla="routerLinkActive"
+          [activated]="subRla.isActive"
+        >
+          <mat-icon matListItemIcon [style.color]="subItem.badge">
+            {{ subItem.icon }}
+          </mat-icon>
+          <span matListItemTitle>{{ subItem.label }}</span>
+        </a>
+      }
+    </div>
   }
-</a>
+} @else {
+  <!-- 一般選單項目連結 -->
+  <a
+    mat-list-item
+    [routerLink]="item().route"
+    routerLinkActive="selected-menu-item"
+    #rla="routerLinkActive"
+    [activated]="rla.isActive"
+  >
+    <!-- 圖示：啟用時顯示實心圖示，未啟用時顯示空心圖示 -->
+    <mat-icon
+      [fontSet]="rla.isActive ? 'material-icons' : 'material-icons-outlined'"
+      matListItemIcon
+    >
+      {{ item().icon }}
+    </mat-icon>
+
+    <!-- 標籤文字：側邊欄展開時才顯示 -->
+    @if (!collapseDrawer()) {
+      <span matListItemTitle>{{ item().label }}</span>
+    }
+  </a>
+}
