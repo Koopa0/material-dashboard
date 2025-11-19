@@ -1,12 +1,39 @@
 /**
  * AI 服務 - Gemini API 整合
  *
- * Sprint 4: GenAI 功能整合
- * 提供文檔摘要生成、問答助手、標籤建議等 AI 功能
+ * 提供完整的 AI 功能整合，使用 Google Gemini 1.5 Pro 模型
+ * 實現 RAG (Retrieval-Augmented Generation) 架構的核心 AI 功能
  *
- * 支援兩種模式：
- * 1. 模擬模式（DEMO_MODE = true）- 無需 API key
- * 2. 真實模式（DEMO_MODE = false）- 需要 Gemini API key
+ * 功能：
+ * - 文檔摘要生成（summarization）
+ * - 智慧問答助手（Q&A with citations）
+ * - 標籤建議（tag suggestion）
+ * - 聊天歷史管理
+ * - NotebookLM 風格的引用標記
+ *
+ * 模式：
+ * - **Demo 模式** (DEMO_MODE = true): 使用模擬回應，無需 API key
+ * - **真實模式** (DEMO_MODE = false): 調用 Gemini API，需要有效的 API key
+ *
+ * 安全特性：
+ * - SSR 兼容（瀏覽器環境檢查）
+ * - API Key 安全儲存（localStorage）
+ * - 錯誤處理與降級
+ *
+ * @example
+ * ```typescript
+ * // 設定 API Key
+ * aiService.setAPIKey('your-gemini-api-key');
+ *
+ * // 生成文檔摘要
+ * const summary = await aiService.generateSummary(document);
+ *
+ * // AI 問答（帶引用）
+ * const answer = await aiService.askQuestion('什麼是 React?', relevantDocs);
+ *
+ * // 標籤建議
+ * const tags = await aiService.suggestTags(document);
+ * ```
  */
 
 import { Injectable, signal, computed } from '@angular/core';
@@ -112,7 +139,17 @@ export class AIService {
   }
 
   /**
-   * 設定 API Key
+   * 設定 Gemini API Key
+   *
+   * 儲存 API Key 到 localStorage 並重新初始化 AI 服務
+   *
+   * @param apiKey - Gemini API Key (從 https://makersuite.google.com/app/apikey 取得)
+   *
+   * @example
+   * ```typescript
+   * aiService.setAPIKey('your-gemini-api-key');
+   * // AI 服務將自動啟用
+   * ```
    */
   setAPIKey(apiKey: string): void {
     if (apiKey && apiKey.trim()) {
@@ -123,6 +160,24 @@ export class AIService {
 
   /**
    * 生成文檔摘要
+   *
+   * 使用 Gemini AI 為文檔生成簡潔的摘要（約 50-80 字）
+   * 在 Demo 模式下使用模擬回應
+   *
+   * @param document - 要生成摘要的文檔
+   * @returns AI 回應物件，包含摘要文字和延遲時間
+   * @returns {string} response.text - 生成的摘要
+   * @returns {number} response.latency - API 延遲時間（毫秒）
+   * @returns {boolean} response.isError - 是否發生錯誤
+   *
+   * @example
+   * ```typescript
+   * const response = await aiService.generateSummary(document);
+   * if (!response.isError) {
+   *   console.log('摘要:', response.text);
+   *   console.log('延遲:', response.latency, 'ms');
+   * }
+   * ```
    */
   async generateSummary(document: Document): Promise<AIResponse> {
     const startTime = performance.now();
@@ -185,6 +240,30 @@ export class AIService {
 
   /**
    * AI 問答助手
+   *
+   * 根據提供的文檔上下文回答使用者問題
+   * 支援引用來源（citations）功能
+   * 在 Demo 模式下使用模擬回應
+   *
+   * @param question - 使用者的問題
+   * @param context - 相關文檔上下文（用於 RAG 檢索增強生成）
+   * @returns AI 回應物件，包含答案、引用和延遲時間
+   * @returns {string} response.text - AI 的回答
+   * @returns {Citation[]} response.citations - 引用的來源文檔（NotebookLM 風格）
+   * @returns {number} response.latency - API 延遲時間（毫秒）
+   * @returns {boolean} response.isError - 是否發生錯誤
+   *
+   * @example
+   * ```typescript
+   * const response = await aiService.askQuestion(
+   *   '什麼是 React Hooks？',
+   *   relevantDocuments
+   * );
+   * if (!response.isError) {
+   *   console.log('答案:', response.text);
+   *   console.log('引用來源:', response.citations);
+   * }
+   * ```
    */
   async askQuestion(question: string, context: Document[]): Promise<AIResponse> {
     const startTime = performance.now();
@@ -259,6 +338,19 @@ ${contextText}
 
   /**
    * 生成標籤建議
+   *
+   * 使用 AI 為文檔生成相關的標籤建議（3-5 個）
+   * 在 Demo 模式下基於內容關鍵字生成
+   *
+   * @param document - 要生成標籤的文檔
+   * @returns 標籤字串陣列
+   *
+   * @example
+   * ```typescript
+   * const tags = await aiService.suggestTags(document);
+   * console.log('建議標籤:', tags);
+   * // Output: ['React', 'Hooks', '前端開發', '狀態管理']
+   * ```
    */
   async suggestTags(document: Document): Promise<string[]> {
     if (this.DEMO_MODE) {
@@ -309,7 +401,15 @@ ${contextText}
   }
 
   /**
-   * 清除聊天記錄
+   * 清除對話歷史
+   *
+   * 移除所有聊天記錄，重置對話狀態
+   *
+   * @example
+   * ```typescript
+   * aiService.clearChat();
+   * console.log('對話已清除');
+   * ```
    */
   clearChat(): void {
     this.chatHistorySignal.set([]);

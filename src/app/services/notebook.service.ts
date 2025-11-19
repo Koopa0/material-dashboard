@@ -1,8 +1,35 @@
 /**
  * Notebook 服務
  *
- * 管理 Notebooks 的 CRUD 操作
- * 使用 Signals 進行響應式狀態管理
+ * 管理 Notebooks 的 CRUD 操作，提供完整的筆記本管理功能
+ * 使用 Angular v20 Signals 進行響應式狀態管理
+ *
+ * 功能：
+ * - 建立、更新、刪除筆記本
+ * - 管理筆記本中的文檔關聯
+ * - 選擇當前活動的筆記本
+ * - 持久化到 localStorage
+ * - 支援預設筆記本保護（不可刪除）
+ *
+ * @example
+ * ```typescript
+ * // 建立新筆記本
+ * const notebook = notebookService.createNotebook({
+ *   name: '前端開發',
+ *   description: 'React 和 Angular 相關文檔',
+ *   color: NotebookColor.PURPLE,
+ *   icon: NotebookIcon.CODE
+ * });
+ *
+ * // 加入文檔到筆記本
+ * notebookService.addDocumentToNotebook(notebook.id, 'doc-123');
+ *
+ * // 查詢筆記本列表（響應式）
+ * effect(() => {
+ *   const notebooks = notebookService.notebooks();
+ *   console.log(`共有 ${notebooks.length} 個筆記本`);
+ * });
+ * ```
  */
 
 import { Injectable, signal, computed } from '@angular/core';
@@ -132,6 +159,23 @@ export class NotebookService {
 
   /**
    * 建立新筆記本
+   *
+   * @param params - 建立筆記本的參數
+   * @param params.name - 筆記本名稱
+   * @param params.description - 筆記本描述（選填）
+   * @param params.color - 筆記本顏色（選填，預設為藍色）
+   * @param params.icon - 筆記本圖示（選填，預設為資料夾）
+   * @returns 新建立的筆記本物件
+   *
+   * @example
+   * ```typescript
+   * const notebook = notebookService.createNotebook({
+   *   name: '前端開發',
+   *   description: 'React 和 Angular 相關文檔',
+   *   color: NotebookColor.PURPLE,
+   *   icon: NotebookIcon.CODE
+   * });
+   * ```
    */
   createNotebook(params: CreateNotebookParams): Notebook {
     const now = new Date();
@@ -154,6 +198,22 @@ export class NotebookService {
 
   /**
    * 更新筆記本
+   *
+   * @param id - 筆記本 ID
+   * @param params - 要更新的欄位
+   * @param params.name - 新名稱（選填）
+   * @param params.description - 新描述（選填）
+   * @param params.color - 新顏色（選填）
+   * @param params.icon - 新圖示（選填）
+   * @returns 更新後的筆記本物件，如果找不到則返回 null
+   *
+   * @example
+   * ```typescript
+   * const updated = notebookService.updateNotebook('nb-123', {
+   *   name: '前端進階開發',
+   *   color: NotebookColor.GREEN
+   * });
+   * ```
    */
   updateNotebook(id: string, params: UpdateNotebookParams): Notebook | null {
     let updatedNotebook: Notebook | null = null;
@@ -181,6 +241,19 @@ export class NotebookService {
 
   /**
    * 刪除筆記本
+   *
+   * 注意：不允許刪除預設筆記本（isDefault = true）
+   *
+   * @param id - 筆記本 ID
+   * @returns 是否成功刪除（如果是預設筆記本或找不到則返回 false）
+   *
+   * @example
+   * ```typescript
+   * const success = notebookService.deleteNotebook('nb-123');
+   * if (!success) {
+   *   console.log('無法刪除預設筆記本或筆記本不存在');
+   * }
+   * ```
    */
   deleteNotebook(id: string): boolean {
     const notebook = this.notebooksSignal().find((nb) => nb.id === id);
@@ -206,6 +279,19 @@ export class NotebookService {
 
   /**
    * 選擇筆記本
+   *
+   * 更新當前選中的筆記本，供 UI 顯示使用
+   *
+   * @param id - 筆記本 ID，傳入 null 表示取消選擇
+   *
+   * @example
+   * ```typescript
+   * // 選擇筆記本
+   * notebookService.selectNotebook('nb-123');
+   *
+   * // 取消選擇
+   * notebookService.selectNotebook(null);
+   * ```
    */
   selectNotebook(id: string | null): void {
     this.selectedNotebookIdSignal.set(id);
@@ -213,6 +299,20 @@ export class NotebookService {
 
   /**
    * 將文檔加入筆記本
+   *
+   * 如果文檔已存在於筆記本中，則不會重複加入
+   *
+   * @param notebookId - 筆記本 ID
+   * @param documentId - 文檔 ID
+   * @returns 是否成功加入（如果文檔已存在或筆記本不存在則返回 false）
+   *
+   * @example
+   * ```typescript
+   * const success = notebookService.addDocumentToNotebook('nb-123', 'doc-456');
+   * if (success) {
+   *   console.log('文檔已加入筆記本');
+   * }
+   * ```
    */
   addDocumentToNotebook(notebookId: string, documentId: string): boolean {
     let success = false;
@@ -240,6 +340,18 @@ export class NotebookService {
 
   /**
    * 從筆記本移除文檔
+   *
+   * @param notebookId - 筆記本 ID
+   * @param documentId - 文檔 ID
+   * @returns 是否成功移除（如果文檔不存在或筆記本不存在則返回 false）
+   *
+   * @example
+   * ```typescript
+   * const success = notebookService.removeDocumentFromNotebook('nb-123', 'doc-456');
+   * if (success) {
+   *   console.log('文檔已從筆記本移除');
+   * }
+   * ```
    */
   removeDocumentFromNotebook(notebookId: string, documentId: string): boolean {
     let success = false;
@@ -267,6 +379,15 @@ export class NotebookService {
 
   /**
    * 取得筆記本的文檔數量
+   *
+   * @param notebookId - 筆記本 ID
+   * @returns 文檔數量，如果筆記本不存在則返回 0
+   *
+   * @example
+   * ```typescript
+   * const count = notebookService.getDocumentCount('nb-123');
+   * console.log(`筆記本包含 ${count} 個文檔`);
+   * ```
    */
   getDocumentCount(notebookId: string): number {
     const notebook = this.notebooksSignal().find((nb) => nb.id === notebookId);

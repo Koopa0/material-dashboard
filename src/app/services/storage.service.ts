@@ -3,13 +3,42 @@ import { isPlatformBrowser } from '@angular/common';
 
 /**
  * Storage 服務（Angular v20 最佳實踐）
- * 提供 SSR 安全的 localStorage 操作
+ *
+ * 提供 SSR 安全的 localStorage 操作封裝
+ * 解決 Angular Universal (SSR) 環境中無法存取 localStorage 的問題
  *
  * 特點：
  * - 自動檢測平台環境（Browser/Server）
- * - SSR 環境下安全地返回 null
- * - 統一的錯誤處理
- * - TypeScript 類型安全
+ * - SSR 環境下安全地返回 null 或 false
+ * - 統一的錯誤處理（try-catch）
+ * - TypeScript 泛型支援，類型安全
+ * - 支援物件自動序列化/反序列化
+ *
+ * 使用場景：
+ * - 持久化使用者設定（主題、語言等）
+ * - 快取資料（文檔列表、統計資料等）
+ * - 儲存 API Token 或憑證
+ *
+ * @example
+ * ```typescript
+ * // 儲存物件
+ * const user = { id: 1, name: 'John' };
+ * storageService.set('user', user);
+ *
+ * // 讀取物件（類型安全）
+ * const savedUser = storageService.get<User>('user');
+ *
+ * // 儲存字串
+ * storageService.setString('token', 'abc123');
+ *
+ * // 檢查是否存在
+ * if (storageService.has('user')) {
+ *   console.log('使用者資料已存在');
+ * }
+ *
+ * // 刪除
+ * storageService.remove('token');
+ * ```
  */
 @Injectable({
   providedIn: 'root',
