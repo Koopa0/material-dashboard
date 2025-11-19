@@ -9,3 +9,4 @@ export * from './embedding.model';
 export * from './query.model';
 export * from './statistics.model';
 export * from './menu-item.model';
+export * from './notebook.model';

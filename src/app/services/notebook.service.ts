@@ -6,7 +6,13 @@
  */
 
 import { Injectable, signal, computed } from '@angular/core';
-import { Notebook, CreateNotebookParams, UpdateNotebookParams } from '../models/notebook.model';
+import {
+  Notebook,
+  CreateNotebookParams,
+  UpdateNotebookParams,
+  NotebookColor,
+  NotebookIcon,
+} from '../models/notebook.model';
 
 @Injectable({
   providedIn: 'root',
@@ -75,8 +81,8 @@ export class NotebookService {
         id: this.generateId(),
         name: '工作專案',
         description: '工作相關的技術文檔和筆記',
-        color: '#3b82f6',
-        icon: 'work',
+        color: NotebookColor.BLUE,
+        icon: NotebookIcon.WORK,
         documentIds: [],
         isDefault: true,
         createdAt: now,
@@ -86,8 +92,8 @@ export class NotebookService {
         id: this.generateId(),
         name: '學習筆記',
         description: '個人學習和研究的技術資料',
-        color: '#8b5cf6',
-        icon: 'school',
+        color: NotebookColor.PURPLE,
+        icon: NotebookIcon.SCHOOL,
         documentIds: [],
         createdAt: now,
         updatedAt: now,
@@ -96,8 +102,8 @@ export class NotebookService {
         id: this.generateId(),
         name: '技術研究',
         description: '深入研究的技術主題和實驗',
-        color: '#ec4899',
-        icon: 'science',
+        color: NotebookColor.PINK,
+        icon: NotebookIcon.SCIENCE,
         documentIds: [],
         createdAt: now,
         updatedAt: now,
@@ -126,8 +132,8 @@ export class NotebookService {
       id: this.generateId(),
       name: params.name,
       description: params.description,
-      color: params.color || '#3b82f6',
-      icon: params.icon || 'folder',
+      color: params.color || NotebookColor.BLUE,
+      icon: params.icon || NotebookIcon.FOLDER,
       documentIds: [],
       createdAt: now,
       updatedAt: now,

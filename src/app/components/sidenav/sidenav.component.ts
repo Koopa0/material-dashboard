@@ -5,14 +5,19 @@
  * 使用 Angular v20 Signals 管理選單項目狀態
  */
 import { Component, input, signal, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { MatListModule, MatNavList } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialog } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
 import { MenuItem } from '../../models/menu-item.model';
 import { MenuItemComponent } from '../menu-item/menu-item.component';
 import { MatIconModule } from '@angular/material/icon';
 import { SidenavHeaderComponent } from './sidenav-header/sidenav-header.component';
 import { NotebookService } from '../../services/notebook.service';
+import { NotebookDialogComponent } from '../notebook-dialog/notebook-dialog.component';
+import { Notebook, NotebookColorMap } from '../../models/notebook.model';
 
 @Component({
   selector: 'app-sidenav',
@@ -22,6 +27,7 @@ import { NotebookService } from '../../services/notebook.service';
     MatIconModule,
     MatButtonModule,
     MatDividerModule,
+    MatMenuModule,
     MenuItemComponent,
     SidenavHeaderComponent,
   ],
@@ -30,6 +36,11 @@ import { NotebookService } from '../../services/notebook.service';
 })
 export class SidenavComponent {
   notebookService = inject(NotebookService);
+  private dialog = inject(MatDialog);
+  private router = inject(Router);
+
+  /** 顏色映射 */
+  notebookColorMap = NotebookColorMap;
 
   /**
    * 側邊欄收合狀態（由父元件傳入）
@@ -68,4 +79,42 @@ export class SidenavComponent {
       route: 'settings',
     },
   ]);
+
+  /** 取得 Notebook 顏色 */
+  getNotebookColor(notebook: Notebook): string {
+    return this.notebookColorMap[notebook.color];
+  }
+
+  /** 新增 Notebook */
+  createNotebook(): void {
+    this.dialog.open(NotebookDialogComponent, {
+      width: '600px',
+      maxWidth: '90vw',
+      data: { mode: 'create' },
+    });
+  }
+
+  /** 編輯 Notebook */
+  editNotebook(notebook: Notebook, event: Event): void {
+    event.stopPropagation();
+    this.dialog.open(NotebookDialogComponent, {
+      width: '600px',
+      maxWidth: '90vw',
+      data: { mode: 'edit', notebook },
+    });
+  }
+
+  /** 刪除 Notebook */
+  deleteNotebook(notebook: Notebook, event: Event): void {
+    event.stopPropagation();
+    if (confirm(`確定要刪除「${notebook.name}」嗎？`)) {
+      this.notebookService.deleteNotebook(notebook.id);
+    }
+  }
+
+  /** 查看 Notebook */
+  viewNotebook(notebook: Notebook): void {
+    this.notebookService.selectNotebook(notebook.id);
+    this.router.navigate(['/notebooks', notebook.id]);
+  }
 }
