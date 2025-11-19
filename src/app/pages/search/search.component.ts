@@ -11,6 +11,7 @@ import { Component, inject, signal, computed, effect, OnInit } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -42,6 +43,9 @@ export class SearchComponent implements OnInit {
 
   /** 路由器 */
   private router = inject(Router);
+
+  /** DOM Sanitizer - 用於安全地處理 HTML */
+  private sanitizer = inject(DomSanitizer);
 
   /** 搜尋查詢文字 */
   searchQuery = signal<string>('');
@@ -182,14 +186,46 @@ export class SearchComponent implements OnInit {
   }
 
   /**
-   * 高亮搜尋關鍵字
+   * 高亮搜尋關鍵字（防 XSS 和 ReDoS）
+   *
+   * Angular v20 最佳實踐：
+   * 1. 先轉義 HTML 特殊字符（防 XSS）
+   * 2. 轉義正則表達式特殊字符（防 ReDoS）
+   * 3. 使用 DomSanitizer 進行最終消毒
    */
-  highlightText(text: string, query: string): string {
+  highlightText(text: string, query: string): SafeHtml {
     if (!query.trim()) {
-      return text;
+      // 即使是純文字也要轉義
+      return this.escapeHtml(text);
     }
 
-    const regex = new RegExp(`(${query})`, 'gi');
-    return text.replace(regex, '<mark class="highlight">$1</mark>');
+    // 1. 先轉義 HTML（防止 XSS）
+    const escapedText = this.escapeHtml(text);
+
+    // 2. 轉義正則表達式特殊字符（防止 ReDoS）
+    const escapedQuery = this.escapeRegex(query);
+
+    // 3. 進行高亮替換
+    const regex = new RegExp(`(${escapedQuery})`, 'gi');
+    const highlighted = escapedText.replace(regex, '<mark class="highlight">$1</mark>');
+
+    // 4. 使用 DomSanitizer 進行消毒（Angular 20 推薦）
+    return this.sanitizer.sanitize(1, highlighted) || '';
+  }
+
+  /**
+   * 轉義 HTML 特殊字符
+   */
+  private escapeHtml(text: string): string {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  /**
+   * 轉義正則表達式特殊字符
+   */
+  private escapeRegex(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 }

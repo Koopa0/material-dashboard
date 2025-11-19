@@ -1,6 +1,7 @@
-import { Component, OnInit, computed, signal, inject } from '@angular/core';
+import { Component, computed, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -27,15 +28,36 @@ import { Document } from '../../models/document.model';
   templateUrl: './notebook-detail.component.html',
   styleUrl: './notebook-detail.component.scss',
 })
-export class NotebookDetailComponent implements OnInit {
+export class NotebookDetailComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private notebookService = inject(NotebookService);
   private knowledgeBase = inject(KnowledgeBaseService);
   private dialog = inject(MatDialog);
 
+  /**
+   * 使用 toSignal() 自動管理路由參數訂閱（Angular v20 最佳實踐）
+   * 無需手動 unsubscribe，自動清理
+   */
+  private routeParams = toSignal(this.route.paramMap);
+
   /** 當前 Notebook ID */
   notebookId = signal<string | null>(null);
+
+  /**
+   * 使用 effect() 響應路由變化（Angular v20 推薦）
+   * 自動追蹤依賴並清理
+   */
+  constructor() {
+    effect(() => {
+      const params = this.routeParams();
+      const id = params?.get('id');
+      if (id) {
+        this.notebookId.set(id);
+        this.notebookService.selectNotebook(id);
+      }
+    });
+  }
 
   /** 當前 Notebook */
   notebook = computed<Notebook | undefined>(() => {
@@ -60,17 +82,6 @@ export class NotebookDetailComponent implements OnInit {
 
   /** 顏色映射 */
   colorMap = NotebookColorMap;
-
-  ngOnInit(): void {
-    // 從路由參數取得 Notebook ID
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
-      if (id) {
-        this.notebookId.set(id);
-        this.notebookService.selectNotebook(id);
-      }
-    });
-  }
 
   /** 返回上一頁 */
   goBack(): void {
