@@ -13,6 +13,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
 import { Document } from '../models/document.model';
 import { Citation } from '../models/citation.model';
+import { devLog } from '../utils/dev-logger';
 
 /**
  * AI 回應介面
@@ -84,17 +85,17 @@ export class AIService {
           this.genAI = new GoogleGenerativeAI(apiKey);
           this.model = this.genAI.getGenerativeModel({ model: this.MODEL_NAME });
           this.isEnabled.set(true);
-          console.log('✅ Gemini AI 已初始化');
+          devLog.log('✅ Gemini AI 已初始化');
         } catch (error) {
-          console.error('❌ Gemini AI 初始化失敗:', error);
+          devLog.error('❌ Gemini AI 初始化失敗:', error);
           this.isEnabled.set(false);
         }
       } else {
-        console.warn('⚠️ 未設定 Gemini API Key，AI 功能已停用');
+        devLog.warn('⚠️ 未設定 Gemini API Key，AI 功能已停用');
         this.isEnabled.set(false);
       }
     } else {
-      console.log('🎭 Demo 模式：使用模擬 AI 回應');
+      devLog.log('🎭 Demo 模式：使用模擬 AI 回應');
     }
   }
 
@@ -174,7 +175,7 @@ export class AIService {
         latency: Math.round(latency),
       };
     } catch (error) {
-      console.error('生成摘要失敗:', error);
+      devLog.error('生成摘要失敗:', error);
       return {
         text: '生成摘要時發生錯誤',
         isError: true,
@@ -247,7 +248,7 @@ ${contextText}
         latency: Math.round(latency),
       };
     } catch (error) {
-      console.error('問答失敗:', error);
+      devLog.error('問答失敗:', error);
       this.isProcessing.set(false);
       return {
         text: '處理問題時發生錯誤',
@@ -302,7 +303,7 @@ ${contextText}
 
       return text.split(/[,、]/).map((tag: string) => tag.trim()).filter(Boolean);
     } catch (error) {
-      console.error('生成標籤失敗:', error);
+      devLog.error('生成標籤失敗:', error);
       return [];
     }
   }

@@ -79,13 +79,7 @@ export class DocumentsComponent implements AfterViewInit {
   pageSizeOptions = [10, 20, 50, 100];
 
   ngAfterViewInit(): void {
-    console.log('📄 Documents 組件初始化');
-    console.log('📊 分頁器狀態:', this.paginator);
-    if (this.paginator) {
-      console.log('✅ 分頁器已正確掛載');
-    } else {
-      console.error('❌ 分頁器未找到！');
-    }
+    // 分頁器初始化完成
   }
 
   /**
@@ -141,25 +135,15 @@ export class DocumentsComponent implements AfterViewInit {
    * Angular v20 最佳實踐：使用正確的 Material 類型
    */
   onPageChange(event: PageEvent): void {
-    console.log('🔄 分頁變更事件觸發！');
-    console.log('Page change event:', event);
-    console.log('Setting page to:', event.pageIndex + 1);
-    console.log('Setting page size to:', event.pageSize);
     this.knowledgeBase.setPage(event.pageIndex + 1);
     this.knowledgeBase.setPageSize(event.pageSize);
-    console.log('Current page after change:', this.knowledgeBase.currentPage());
-    console.log('Documents count:', this.documents().length);
   }
 
   /**
    * 將文檔加入 Notebook
    */
   addToNotebook(doc: Document, notebook: Notebook): void {
-    const success = this.notebookService.addDocumentToNotebook(notebook.id, doc.id);
-    if (success) {
-      console.log(`✅ 已將「${doc.title}」加入「${notebook.name}」`);
-    } else {
-      console.log(`⚠️「${doc.title}」已在「${notebook.name}」中`);
-    }
+    this.notebookService.addDocumentToNotebook(notebook.id, doc.id);
+    // TODO: 使用 MatSnackBar 顯示成功/失敗訊息
   }
 }

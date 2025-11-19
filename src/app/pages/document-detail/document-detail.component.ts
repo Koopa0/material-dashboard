@@ -139,11 +139,11 @@ export class DocumentDetailComponent {
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(url).then(() => {
-        console.log('✅ 已複製連結到剪貼簿:', url);
-        // TODO: 顯示 Toast 通知
+        // TODO: 使用 MatSnackBar 顯示成功訊息
       });
     } else {
-      console.log('📋 分享連結:', url);
+      // 瀏覽器不支援 clipboard API
+      // TODO: 使用 MatSnackBar 顯示連結供手動複製
     }
   }
 

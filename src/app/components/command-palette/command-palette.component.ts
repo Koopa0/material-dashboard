@@ -117,7 +117,6 @@ export class CommandPaletteComponent {
         keywords: ['new', 'create', '新增', '創建', '文檔'],
         action: () => {
           // TODO: 實現新增文檔功能
-          console.log('新增文檔');
         },
       }
     );

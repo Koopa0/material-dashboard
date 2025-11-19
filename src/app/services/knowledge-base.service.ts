@@ -42,6 +42,7 @@ import {
   generateQueryStatistics,
   generatePopularQueries,
 } from '../data/mock-data.generator';
+import { devLog } from '../utils/dev-logger';
 
 /**
  * 知識庫服務
@@ -271,27 +272,27 @@ export class KnowledgeBaseService {
 
     if (savedDocs && savedDocs.length > 0 && !hasOldFormat && !missingNewFields) {
       this.documentsSignal.set(savedDocs);
-      console.log('✅ 從 localStorage 載入文檔資料:', savedDocs.length, '筆');
+      devLog.log('✅ 從 localStorage 載入文檔資料:', savedDocs.length, '筆');
     } else {
       // 生成模擬資料（舊資料格式或缺少新欄位時重新生成）
       const mockDocs = generateMockDocuments(300);
       this.documentsSignal.set(mockDocs);
 
       if (hasOldFormat) {
-        console.log('⚠️ 偵測到舊資料格式，已重新生成文檔資料');
+        devLog.warn('⚠️ 偵測到舊資料格式，已重新生成文檔資料');
       } else if (missingNewFields) {
-        console.log('⚠️ 偵測到缺少新欄位（isPinned, isFavorited, lastViewedAt），已重新生成文檔資料');
+        devLog.warn('⚠️ 偵測到缺少新欄位（isPinned, isFavorited, lastViewedAt），已重新生成文檔資料');
       } else {
-        console.log('✅ 生成新的模擬文檔資料:', mockDocs.length, '筆');
+        devLog.log('✅ 生成新的模擬文檔資料:', mockDocs.length, '筆');
       }
 
       // 驗證新資料包含必要欄位
       const pinnedCount = mockDocs.filter(d => d.isPinned).length;
       const favoritedCount = mockDocs.filter(d => d.isFavorited).length;
       const recentCount = mockDocs.filter(d => d.lastViewedAt).length;
-      console.log(`   - 釘選文檔: ${pinnedCount} 筆`);
-      console.log(`   - 收藏文檔: ${favoritedCount} 筆`);
-      console.log(`   - 最近查看: ${recentCount} 筆`);
+      devLog.log(`   - 釘選文檔: ${pinnedCount} 筆`);
+      devLog.log(`   - 收藏文檔: ${favoritedCount} 筆`);
+      devLog.log(`   - 最近查看: ${recentCount} 筆`);
     }
 
     // 生成向量嵌入

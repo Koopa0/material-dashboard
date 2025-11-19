@@ -59,7 +59,6 @@ export class SearchComponent implements OnInit {
     // 監聽搜尋查詢變化並計算搜尋延遲
     effect(() => {
       const query = this.searchQuery();
-      console.log('🔍 搜尋查詢變更:', query);
 
       // 在 effect 中計算搜尋延遲（而非在 computed 中）
       if (query.trim()) {
@@ -75,8 +74,7 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('🔎 Search 組件初始化');
-    console.log('📚 可用文檔總數:', this.knowledgeBase.documents().length);
+    // Search 組件初始化完成
   }
 
   /**
@@ -91,9 +89,7 @@ export class SearchComponent implements OnInit {
       return [];
     }
 
-    console.log('🔍 搜尋關鍵字:', query);
     const allDocs = this.knowledgeBase.documents();
-    console.log('📚 可搜尋文檔總數:', allDocs.length);
 
     // 過濾並計算相關性分數
     const results = allDocs
@@ -104,14 +100,6 @@ export class SearchComponent implements OnInit {
       .filter((doc) => doc.relevanceScore > 0)
       .sort((a, b) => b.relevanceScore - a.relevanceScore)
       .slice(0, 50); // 限制最多 50 個結果
-
-    console.log('✅ 找到結果:', results.length, '筆');
-    if (results.length > 0) {
-      console.log('📄 前 3 筆結果:', results.slice(0, 3).map(r => ({
-        title: r.title,
-        score: r.relevanceScore
-      })));
-    }
 
     return results;
   });
