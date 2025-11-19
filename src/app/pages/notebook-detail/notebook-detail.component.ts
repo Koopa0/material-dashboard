@@ -90,9 +90,9 @@ export class NotebookDetailComponent {
     this.router.navigate(['/dashboard']);
   }
 
-  /** 前往文檔管理頁面 */
+  /** 前往 Notebooks 管理頁面 */
   goToDocuments(): void {
-    this.router.navigate(['/documents']);
+    this.router.navigate(['/notebooks']);
   }
 
   /** 取得 Notebook 顏色 */

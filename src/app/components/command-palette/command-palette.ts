@@ -65,7 +65,7 @@ export class CommandPaletteComponent {
         icon: 'add',
         action: () => {
           this.close();
-          this.router.navigate(['/documents']);
+          this.router.navigate(['/notebooks']);
         },
       },
       {
@@ -101,7 +101,7 @@ export class CommandPaletteComponent {
         action: () => {
           this.notebookService.selectNotebook(notebook.id);
           this.close();
-          this.router.navigate(['/documents']);
+          this.router.navigate(['/notebooks', notebook.id]);
         },
       });
     });

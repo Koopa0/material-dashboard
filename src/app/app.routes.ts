@@ -6,7 +6,6 @@
  */
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { DocumentsComponent } from './pages/documents/documents.component';
 import { DocumentDetailComponent } from './pages/document-detail/document-detail.component';
 import { NotebooksComponent } from './pages/notebooks/notebooks';
 import { NotebookDetailComponent } from './pages/notebook-detail/notebook-detail.component';
@@ -24,11 +23,6 @@ export const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     title: 'Dashboard - RAG 知識庫',
-  },
-  {
-    path: 'documents',
-    component: DocumentsComponent,
-    title: 'Documents - RAG 知識庫',
   },
   {
     path: 'documents/:id',

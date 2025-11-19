@@ -110,7 +110,7 @@ export class DocumentDetailComponent {
 
   /** 返回上一頁 */
   goBack(): void {
-    this.router.navigate(['/documents']);
+    this.router.navigate(['/notebooks']);
   }
 
   /** 切換釘選狀態 */

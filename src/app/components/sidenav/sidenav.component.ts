@@ -70,11 +70,6 @@ export class SidenavComponent {
         route: 'dashboard',
       },
       {
-        icon: 'description',
-        label: 'Documents',
-        route: 'documents',
-      },
-      {
         icon: 'auto_stories',
         label: 'Notebooks',
         route: 'notebooks',
