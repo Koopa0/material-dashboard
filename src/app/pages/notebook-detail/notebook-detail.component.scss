@@ -1,0 +1,342 @@
+/**
+ * Notebook 詳細頁面樣式 - Gemini 風格
+ */
+
+.notebook-detail-page {
+  min-height: 100vh;
+  background: var(--color-background);
+  padding: 0;
+}
+
+// 頂部操作欄
+.notebook-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  backdrop-filter: blur(8px);
+  background: rgba(var(--color-surface-rgb), 0.95);
+
+  .back-button {
+    color: var(--color-on-surface);
+    transition: all var(--transition-fast) ease;
+
+    &:hover {
+      background: var(--color-surface-hover);
+      transform: translateX(-2px);
+    }
+  }
+
+  .header-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .notebook-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+    }
+
+    .notebook-info {
+      .notebook-name {
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+        color: var(--color-on-surface);
+      }
+
+      .notebook-description {
+        font-size: 14px;
+        color: var(--color-text-secondary);
+        margin: 4px 0 0 0;
+      }
+    }
+  }
+
+  .header-spacer {
+    flex: 1;
+  }
+
+  .notebook-actions {
+    display: flex;
+    gap: 8px;
+
+    button {
+      color: var(--color-text-secondary);
+      transition: all var(--transition-fast) ease;
+
+      &:hover {
+        background: var(--color-surface-hover);
+        color: var(--color-primary);
+      }
+    }
+  }
+}
+
+// Notebook 主體
+.notebook-body {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+// 統計資訊
+.notebook-stats {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 32px;
+  padding: 16px 24px;
+  background: var(--color-surface-variant);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--color-on-surface);
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      color: var(--color-primary);
+    }
+  }
+}
+
+// 文檔網格
+.documents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+
+  .document-card {
+    cursor: pointer;
+    transition: all var(--transition-base) ease;
+    border: 1px solid transparent;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--color-primary);
+
+      .remove-btn {
+        opacity: 1;
+      }
+    }
+
+    mat-card-content {
+      padding: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+
+      .doc-icon {
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+        color: var(--color-primary);
+      }
+
+      .remove-btn {
+        opacity: 0;
+        transition: all var(--transition-fast) ease;
+        color: var(--color-error);
+
+        &:hover {
+          background: rgba(var(--color-error-rgb), 0.1);
+        }
+      }
+    }
+
+    .doc-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-on-surface);
+      margin: 0 0 12px 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      line-height: 1.4;
+    }
+
+    .doc-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 13px;
+
+      .doc-category {
+        color: var(--color-primary);
+        font-weight: 500;
+      }
+
+      .doc-views {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--color-text-secondary);
+
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+
+    .doc-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+
+      .tag {
+        display: inline-block;
+        padding: 4px 8px;
+        background: var(--color-surface-variant);
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        font-size: 11px;
+        color: var(--color-text-secondary);
+      }
+    }
+  }
+}
+
+// 空狀態
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  padding: 48px 24px;
+  text-align: center;
+
+  mat-icon {
+    font-size: 96px;
+    width: 96px;
+    height: 96px;
+    color: var(--color-text-secondary);
+    opacity: 0.3;
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--color-on-surface);
+    margin: 0 0 12px 0;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    margin: 0 0 32px 0;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+// Notebook 不存在
+.notebook-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  padding: 48px 24px;
+  text-align: center;
+
+  mat-icon {
+    font-size: 96px;
+    width: 96px;
+    height: 96px;
+    color: var(--color-text-secondary);
+    opacity: 0.3;
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--color-on-surface);
+    margin: 0 0 12px 0;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    margin: 0 0 32px 0;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+// 深色模式增強
+body[data-theme='dark'] {
+  .document-card {
+    &:hover {
+      box-shadow: var(--glow-primary);
+    }
+  }
+
+  .notebook-stats {
+    background: rgba(var(--color-primary-rgb), 0.05);
+  }
+}
+
+// 響應式設計
+@media (max-width: 768px) {
+  .notebook-header {
+    .header-info {
+      .notebook-icon {
+        font-size: 36px;
+        width: 36px;
+        height: 36px;
+      }
+
+      .notebook-info {
+        .notebook-name {
+          font-size: 22px;
+        }
+      }
+    }
+  }
+
+  .notebook-body {
+    padding: 24px 16px;
+  }
+
+  .notebook-stats {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .documents-grid {
+    grid-template-columns: 1fr;
+  }
+}

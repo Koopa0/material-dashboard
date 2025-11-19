@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject, effect } from '@angular/core';
+import { Component, signal, computed, inject, effect, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -35,6 +35,8 @@ export interface CommandItem {
   imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule],
   templateUrl: './command-palette.component.html',
   styleUrl: './command-palette.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommandPaletteComponent {
   private router = inject(Router);
@@ -115,7 +117,6 @@ export class CommandPaletteComponent {
         keywords: ['new', 'create', '新增', '創建', '文檔'],
         action: () => {
           // TODO: 實現新增文檔功能
-          console.log('新增文檔');
         },
       }
     );

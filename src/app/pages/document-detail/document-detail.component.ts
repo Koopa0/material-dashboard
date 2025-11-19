@@ -1,6 +1,8 @@
-import { Component, OnInit, computed, signal, inject } from '@angular/core';
+import { Component, OnInit, computed, signal, inject, effect, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
@@ -22,14 +24,39 @@ import { Document } from '../../models/document.model';
   ],
   templateUrl: './document-detail.component.html',
   styleUrl: './document-detail.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DocumentDetailComponent implements OnInit {
+export class DocumentDetailComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private knowledgeBase = inject(KnowledgeBaseService);
+  private sanitizer = inject(DomSanitizer);
+
+  /**
+   * 使用 toSignal() 自動管理路由參數訂閱（Angular v20 最佳實踐）
+   * 無需手動 unsubscribe，自動清理
+   */
+  private routeParams = toSignal(this.route.paramMap);
 
   /** 當前文檔 ID */
   documentId = signal<string | null>(null);
+
+  /**
+   * 使用 effect() 響應路由變化（Angular v20 推薦）
+   * 自動追蹤依賴並清理
+   */
+  constructor() {
+    effect(() => {
+      const params = this.routeParams();
+      const id = params?.get('id');
+      if (id) {
+        this.documentId.set(id);
+        // 記錄查看
+        this.knowledgeBase.recordView(id);
+      }
+    });
+  }
 
   /** 當前文檔 */
   document = computed<Document | undefined>(() => {
@@ -81,18 +108,6 @@ export class DocumentDetailComponent implements OnInit {
     return scored;
   });
 
-  ngOnInit(): void {
-    // 從路由參數取得文檔 ID
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
-      if (id) {
-        this.documentId.set(id);
-        // 記錄查看
-        this.knowledgeBase.recordView(id);
-      }
-    });
-  }
-
   /** 返回上一頁 */
   goBack(): void {
     this.router.navigate(['/documents']);
@@ -124,11 +139,11 @@ export class DocumentDetailComponent implements OnInit {
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(url).then(() => {
-        console.log('✅ 已複製連結到剪貼簿:', url);
-        // TODO: 顯示 Toast 通知
+        // TODO: 使用 MatSnackBar 顯示成功訊息
       });
     } else {
-      console.log('📋 分享連結:', url);
+      // 瀏覽器不支援 clipboard API
+      // TODO: 使用 MatSnackBar 顯示連結供手動複製
     }
   }
 
@@ -146,24 +161,47 @@ export class DocumentDetailComponent implements OnInit {
     });
   }
 
-  /** 將純文本轉換為簡單的 HTML（處理換行和基本格式） */
-  formatContent(content: string): string {
+  /**
+   * 將純文本轉換為簡單的 HTML（安全處理，防 XSS）
+   *
+   * Angular v20 最佳實踐：
+   * 1. 先轉義所有 HTML 特殊字符
+   * 2. 然後只允許特定的格式化標記
+   * 3. 使用 DomSanitizer 進行最終消毒
+   */
+  formatContent(content: string): SafeHtml {
     if (!content) return '';
 
-    return content
+    // 1. 先轉義所有 HTML（防止 XSS）
+    const escapedContent = this.escapeHtml(content);
+
+    // 2. 應用格式化（只處理已轉義的內容）
+    const formatted = escapedContent
       // 處理換行
       .split('\n\n')
       .map((para) => `<p>${para.replace(/\n/g, '<br>')}</p>`)
       .join('')
-      // 處理粗體 **text**
+      // 處理粗體 **text** (已轉義，安全)
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      // 處理斜體 *text*
+      // 處理斜體 *text* (已轉義，安全)
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      // 處理代碼 `code`
+      // 處理代碼 `code` (已轉義，安全)
       .replace(/`(.*?)`/g, '<code>$1</code>')
-      // 處理標題 # Title
+      // 處理標題 # Title (已轉義，安全)
       .replace(/^# (.*?)$/gm, '<h1>$1</h1>')
       .replace(/^## (.*?)$/gm, '<h2>$1</h2>')
       .replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+
+    // 3. 使用 DomSanitizer 進行最終消毒
+    return this.sanitizer.sanitize(1, formatted) || '';
+  }
+
+  /**
+   * 轉義 HTML 特殊字符
+   */
+  private escapeHtml(text: string): string {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 }

@@ -434,7 +434,8 @@ export function generate2DPoints(documents: Document[]): Point2D[] {
 }
 
 /**
- * 生成模擬查詢記錄
+ * 生成模擬查詢記錄（類型安全）
+ * Angular v20 最佳實踐：完整的類型定義
  */
 export function generateMockQueryRecords(count: number = 100): QueryRecord[] {
   const queries = [
@@ -450,16 +451,38 @@ export function generateMockQueryRecords(count: number = 100): QueryRecord[] {
     'RAG 系統實作',
   ];
 
-  return Array.from({ length: count }, () => ({
-    id: generateId(),
-    query: queries[Math.floor(Math.random() * queries.length)],
-    type:
-      Math.random() > 0.5 ? QueryType.SEMANTIC : QueryType.KEYWORD,
-    timestamp: randomDate(new Date(2024, 0, 1), new Date()),
-    resultCount: Math.floor(Math.random() * 20),
-    latency: Math.floor(Math.random() * 500) + 50,
-    hasResults: Math.random() > 0.1,
-  }));
+  const topics = [
+    'Golang',
+    'Rust',
+    'Flutter',
+    'Angular',
+    'AI',
+    'Backend',
+    'Database',
+    'Frontend',
+    'Architecture',
+  ];
+
+  return Array.from({ length: count }, () => {
+    const query = queries[Math.floor(Math.random() * queries.length)];
+    // 隨機選擇 1-3 個相關主題
+    const topicCount = Math.floor(Math.random() * 3) + 1;
+    const relatedTopics = Array.from(
+      { length: topicCount },
+      () => topics[Math.floor(Math.random() * topics.length)]
+    );
+
+    return {
+      id: generateId(),
+      query,
+      type: Math.random() > 0.5 ? QueryType.SEMANTIC : QueryType.KEYWORD,
+      timestamp: randomDate(new Date(2024, 0, 1), new Date()),
+      resultCount: Math.floor(Math.random() * 20),
+      latency: Math.floor(Math.random() * 500) + 50,
+      hasResults: Math.random() > 0.1,
+      relatedTopics,
+    };
+  });
 }
 
 /**

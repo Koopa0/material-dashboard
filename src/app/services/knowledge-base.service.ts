@@ -42,6 +42,7 @@ import {
   generateQueryStatistics,
   generatePopularQueries,
 } from '../data/mock-data.generator';
+import { devLog } from '../utils/dev-logger';
 
 /**
  * 知識庫服務
@@ -271,27 +272,27 @@ export class KnowledgeBaseService {
 
     if (savedDocs && savedDocs.length > 0 && !hasOldFormat && !missingNewFields) {
       this.documentsSignal.set(savedDocs);
-      console.log('✅ 從 localStorage 載入文檔資料:', savedDocs.length, '筆');
+      devLog.log('✅ 從 localStorage 載入文檔資料:', savedDocs.length, '筆');
     } else {
       // 生成模擬資料（舊資料格式或缺少新欄位時重新生成）
       const mockDocs = generateMockDocuments(300);
       this.documentsSignal.set(mockDocs);
 
       if (hasOldFormat) {
-        console.log('⚠️ 偵測到舊資料格式，已重新生成文檔資料');
+        devLog.warn('⚠️ 偵測到舊資料格式，已重新生成文檔資料');
       } else if (missingNewFields) {
-        console.log('⚠️ 偵測到缺少新欄位（isPinned, isFavorited, lastViewedAt），已重新生成文檔資料');
+        devLog.warn('⚠️ 偵測到缺少新欄位（isPinned, isFavorited, lastViewedAt），已重新生成文檔資料');
       } else {
-        console.log('✅ 生成新的模擬文檔資料:', mockDocs.length, '筆');
+        devLog.log('✅ 生成新的模擬文檔資料:', mockDocs.length, '筆');
       }
 
       // 驗證新資料包含必要欄位
       const pinnedCount = mockDocs.filter(d => d.isPinned).length;
       const favoritedCount = mockDocs.filter(d => d.isFavorited).length;
       const recentCount = mockDocs.filter(d => d.lastViewedAt).length;
-      console.log(`   - 釘選文檔: ${pinnedCount} 筆`);
-      console.log(`   - 收藏文檔: ${favoritedCount} 筆`);
-      console.log(`   - 最近查看: ${recentCount} 筆`);
+      devLog.log(`   - 釘選文檔: ${pinnedCount} 筆`);
+      devLog.log(`   - 收藏文檔: ${favoritedCount} 筆`);
+      devLog.log(`   - 最近查看: ${recentCount} 筆`);
     }
 
     // 生成向量嵌入
@@ -502,7 +503,8 @@ export class KnowledgeBaseService {
   }
 
   /**
-   * 記錄查詢
+   * 記錄查詢（類型安全）
+   * Angular v20 最佳實踐：完整的類型定義
    */
   private recordQuery(params: {
     query: string;
@@ -510,6 +512,23 @@ export class KnowledgeBaseService {
     resultCount: number;
     latency: number;
   }): void {
+    // 從查詢中提取相關主題（簡單的關鍵字匹配）
+    const relatedTopics: string[] = [];
+    const queryLower = params.query.toLowerCase();
+
+    // 檢查技術類別關鍵字
+    const categories = Object.values(TechnologyCategory);
+    categories.forEach(category => {
+      if (queryLower.includes(category.toLowerCase())) {
+        relatedTopics.push(category);
+      }
+    });
+
+    // 如果沒有匹配到類別，使用查詢本身作為主題
+    if (relatedTopics.length === 0 && params.query.trim()) {
+      relatedTopics.push(params.query.trim());
+    }
+
     const queryRecord: QueryRecord = {
       id: this.generateId(),
       query: params.query,
@@ -518,6 +537,7 @@ export class KnowledgeBaseService {
       resultCount: params.resultCount,
       latency: params.latency,
       hasResults: params.resultCount > 0,
+      relatedTopics,
     };
 
     this.queryRecordsSignal.update((records) => [queryRecord, ...records]);

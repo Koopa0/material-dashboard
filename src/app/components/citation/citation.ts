@@ -31,7 +31,6 @@ export class CitationComponent {
    * 點擊引用標記（未來可跳轉到文檔）
    */
   onClick(): void {
-    console.log('Citation clicked:', this.citation());
-    // TODO: 跳轉到文檔並高亮對應段落
+    // TODO: 實現跳轉到文檔並高亮對應段落
   }
 }

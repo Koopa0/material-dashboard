@@ -14,7 +14,7 @@
  * <app-skeleton type="card" height="200px" />
  * <app-skeleton type="circle" size="48px" />
  */
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 /**
@@ -28,6 +28,8 @@ export type SkeletonType = 'text' | 'card' | 'circle' | 'rect' | 'avatar';
   imports: [CommonModule],
   templateUrl: './skeleton.component.html',
   styleUrl: './skeleton.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SkeletonComponent {
   /**
@@ -84,9 +86,10 @@ export class SkeletonComponent {
   }
 
   /**
-   * 取得骨架屏樣式
+   * 取得骨架屏樣式（類型安全）
+   * Angular v20 最佳實踐：明確定義返回類型
    */
-  getSkeletonStyle(): any {
+  getSkeletonStyle(): Record<string, string | undefined> {
     const type = this.type();
 
     if (type === 'circle') {

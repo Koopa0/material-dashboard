@@ -141,6 +141,27 @@
               {{ doc.isFavorited ? 'star' : 'star_outline' }}
             </mat-icon>
           </button>
+          <button
+            mat-icon-button
+            [matMenuTriggerFor]="notebookMenu"
+            matTooltip="加入 Notebook"
+            #menuTrigger="matMenuTrigger"
+          >
+            <mat-icon>auto_stories</mat-icon>
+          </button>
+          <mat-menu #notebookMenu="matMenu">
+            @for (notebook of notebookService.notebooks(); track notebook.id) {
+              <button mat-menu-item (click)="addToNotebook(doc, notebook)">
+                <mat-icon [style.color]="notebook.color">{{ notebook.icon }}</mat-icon>
+                <span>{{ notebook.name }}</span>
+              </button>
+            }
+            @if (notebookService.notebooks().length === 0) {
+              <button mat-menu-item disabled>
+                <span>暫無 Notebook</span>
+              </button>
+            }
+          </mat-menu>
           <button mat-icon-button (click)="viewDocument(doc)" matTooltip="查看">
             <mat-icon>visibility</mat-icon>
           </button>

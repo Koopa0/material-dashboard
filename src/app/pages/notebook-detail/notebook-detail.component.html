@@ -1,0 +1,128 @@
+<div class="notebook-detail-page">
+  @if (notebook(); as nb) {
+    <!-- 頂部操作欄 -->
+    <div class="notebook-header">
+      <button mat-icon-button class="back-button" (click)="goBack()" matTooltip="返回">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
+      <div class="header-info">
+        <mat-icon
+          class="notebook-icon"
+          [style.color]="getNotebookColor(nb)"
+        >
+          {{ nb.icon }}
+        </mat-icon>
+        <div class="notebook-info">
+          <h1 class="notebook-name">{{ nb.name }}</h1>
+          @if (nb.description) {
+            <p class="notebook-description">{{ nb.description }}</p>
+          }
+        </div>
+      </div>
+
+      <div class="header-spacer"></div>
+
+      <div class="notebook-actions">
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="notebookMenu"
+          matTooltip="更多操作"
+        >
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #notebookMenu="matMenu">
+          <button mat-menu-item (click)="editNotebook()">
+            <mat-icon>edit</mat-icon>
+            <span>編輯 Notebook</span>
+          </button>
+          @if (!nb.isDefault) {
+            <button mat-menu-item (click)="deleteNotebook()">
+              <mat-icon>delete</mat-icon>
+              <span>刪除 Notebook</span>
+            </button>
+          }
+        </mat-menu>
+      </div>
+    </div>
+
+    <!-- 文檔列表 -->
+    <div class="notebook-body">
+      <!-- 統計資訊 -->
+      <div class="notebook-stats">
+        <div class="stat-item">
+          <mat-icon>description</mat-icon>
+          <span>{{ documents().length }} 篇文檔</span>
+        </div>
+        <div class="stat-item">
+          <mat-icon>schedule</mat-icon>
+          <span>更新於 {{ formatDate(nb.updatedAt) }}</span>
+        </div>
+      </div>
+
+      <!-- 文檔網格 -->
+      @if (documents().length > 0) {
+        <div class="documents-grid">
+          @for (doc of documents(); track doc.id) {
+            <mat-card class="document-card gemini-card" (click)="viewDocument(doc)">
+              <mat-card-content>
+                <div class="card-header">
+                  <mat-icon class="doc-icon">description</mat-icon>
+                  <button
+                    mat-icon-button
+                    class="remove-btn"
+                    (click)="$event.stopPropagation(); removeDocument(doc)"
+                    matTooltip="從 Notebook 移除"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+
+                <h3 class="doc-title">{{ doc.title }}</h3>
+
+                <div class="doc-meta">
+                  <span class="doc-category">{{ doc.category }}</span>
+                  <span class="doc-views">
+                    <mat-icon>visibility</mat-icon>
+                    {{ doc.viewCount }}
+                  </span>
+                </div>
+
+                @if (doc.tags.length > 0) {
+                  <div class="doc-tags">
+                    @for (tag of doc.tags.slice(0, 3); track tag) {
+                      <span class="tag">{{ tag }}</span>
+                    }
+                  </div>
+                }
+              </mat-card-content>
+            </mat-card>
+          }
+        </div>
+      } @else {
+        <!-- 空狀態 -->
+        <div class="empty-state">
+          <mat-icon>folder_open</mat-icon>
+          <h2>此 Notebook 尚無文檔</h2>
+          <p>在文檔管理頁面將文檔加入此 Notebook</p>
+          <button mat-raised-button color="primary" (click)="goToDocuments()">
+            <mat-icon>description</mat-icon>
+            前往文檔管理
+          </button>
+        </div>
+      }
+    </div>
+  } @else {
+    <!-- Notebook 不存在 -->
+    <div class="notebook-not-found">
+      <mat-icon>auto_stories_off</mat-icon>
+      <h2>找不到 Notebook</h2>
+      <p>該 Notebook 可能已被刪除或不存在</p>
+      <button mat-raised-button color="primary" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        返回 Dashboard
+      </button>
+    </div>
+  }
+</div>

@@ -8,6 +8,7 @@ import { Routes } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { DocumentsComponent } from './pages/documents/documents.component';
 import { DocumentDetailComponent } from './pages/document-detail/document-detail.component';
+import { NotebookDetailComponent } from './pages/notebook-detail/notebook-detail.component';
 import { SearchComponent } from './pages/search/search.component';
 import { AnalyticsComponent } from './pages/analytics/analytics.component';
 import { SettingsComponent } from './pages/settings/settings.component';
@@ -32,6 +33,11 @@ export const routes: Routes = [
     path: 'documents/:id',
     component: DocumentDetailComponent,
     title: 'Document Detail - RAG 知識庫',
+  },
+  {
+    path: 'notebooks/:id',
+    component: NotebookDetailComponent,
+    title: 'Notebook - RAG 知識庫',
   },
   {
     path: 'search',

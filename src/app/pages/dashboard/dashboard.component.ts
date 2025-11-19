@@ -4,7 +4,7 @@
  * 顯示知識庫的統計資訊和快速概覽
  * 展示 Angular v20 Signals 與 computed 的響應式數據流
  */
-import { Component, inject, computed, OnInit, effect } from '@angular/core';
+import { Component, inject, computed, OnInit, effect, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -19,6 +19,8 @@ import { Document } from '../../models/document.model';
   imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit {
   /** 知識庫服務 */
@@ -37,41 +39,19 @@ export class DashboardComponent implements OnInit {
   queryStats = computed(() => this.knowledgeBase.queryStats());
 
   /** 釘選的文檔 */
-  pinnedDocuments = computed(() => {
-    const pinned = this.knowledgeBase.pinnedDocuments();
-    console.log('📌 Dashboard pinnedDocuments:', pinned.length, pinned);
-    return pinned;
-  });
+  pinnedDocuments = computed(() => this.knowledgeBase.pinnedDocuments());
 
   /** 最近查看的文檔 */
-  recentDocuments = computed(() => {
-    const recent = this.knowledgeBase.recentDocuments();
-    console.log('🕒 Dashboard recentDocuments:', recent.length, recent);
-    return recent;
-  });
-
-  constructor() {
-    // 監聽資料變化
-    effect(() => {
-      const allDocs = this.knowledgeBase.documents();
-      console.log('📚 Dashboard - 總文檔數:', allDocs.length);
-      console.log('📌 Dashboard - 釘選文檔數:', this.pinnedDocuments().length);
-      console.log('🕒 Dashboard - 最近查看數:', this.recentDocuments().length);
-    });
-  }
+  recentDocuments = computed(() => this.knowledgeBase.recentDocuments());
 
   ngOnInit(): void {
-    console.log('🎯 Dashboard 初始化');
-    console.log('📚 總文檔數:', this.knowledgeBase.documents().length);
-    console.log('📌 釘選文檔:', this.pinnedDocuments());
-    console.log('🕒 最近查看:', this.recentDocuments());
+    // Dashboard 初始化完成
   }
 
   /**
    * 查看文檔
    */
   viewDocument(doc: Document): void {
-    console.log('👁️ 點擊查看文檔:', doc.title);
     this.knowledgeBase.recordView(doc.id);
     this.knowledgeBase.selectedDocument.set(doc);
     this.router.navigate(['/documents', doc.id]);

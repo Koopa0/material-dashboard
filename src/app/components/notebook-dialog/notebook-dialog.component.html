@@ -1,0 +1,110 @@
+<div class="notebook-dialog">
+  <h2 mat-dialog-title>{{ title }}</h2>
+
+  <mat-dialog-content>
+    <!-- Notebook 名稱 -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Notebook 名稱</mat-label>
+      <input
+        matInput
+        [(ngModel)]="name"
+        placeholder="例如：工作專案、學習筆記"
+        required
+        maxlength="50"
+      />
+      <mat-icon matPrefix>label</mat-icon>
+    </mat-form-field>
+
+    <!-- Notebook 描述 -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>描述（選填）</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="description"
+        placeholder="簡短描述這個 Notebook 的用途..."
+        rows="3"
+        maxlength="200"
+      ></textarea>
+      <mat-icon matPrefix>description</mat-icon>
+    </mat-form-field>
+
+    <!-- 圖示選擇 -->
+    <div class="section">
+      <h3 class="section-title">
+        <mat-icon>category</mat-icon>
+        選擇圖示
+      </h3>
+      <div class="icon-grid">
+        @for (icon of icons; track icon) {
+          <button
+            type="button"
+            class="icon-button"
+            [class.selected]="selectedIcon() === icon"
+            (click)="selectIcon(icon)"
+            [matTooltip]="getIconLabel(icon)"
+          >
+            <mat-icon>{{ icon }}</mat-icon>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- 顏色選擇 -->
+    <div class="section">
+      <h3 class="section-title">
+        <mat-icon>palette</mat-icon>
+        選擇顏色
+      </h3>
+      <div class="color-grid">
+        @for (color of colors; track color) {
+          <button
+            type="button"
+            class="color-button"
+            [class.selected]="selectedColor() === color"
+            [style.background-color]="getColorValue(color)"
+            (click)="selectColor(color)"
+            [matTooltip]="color"
+          >
+            @if (selectedColor() === color) {
+              <mat-icon>check</mat-icon>
+            }
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- 預覽 -->
+    <div class="section">
+      <h3 class="section-title">
+        <mat-icon>visibility</mat-icon>
+        預覽
+      </h3>
+      <div class="preview-card">
+        <mat-icon
+          class="preview-icon"
+          [style.color]="getColorValue(selectedColor())"
+        >
+          {{ selectedIcon() }}
+        </mat-icon>
+        <div class="preview-info">
+          <div class="preview-name">{{ name() || '未命名 Notebook' }}</div>
+          <div class="preview-description">
+            {{ description() || '沒有描述' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()">取消</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="save()"
+      [disabled]="!name().trim()"
+    >
+      {{ isEditMode ? '儲存' : '新增' }}
+    </button>
+  </mat-dialog-actions>
+</div>

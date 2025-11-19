@@ -7,10 +7,11 @@
  * - 搜尋結果高亮
  * - 效能優化
  */
-import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,6 +36,8 @@ import { Document } from '../../models';
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchComponent implements OnInit {
   /** 知識庫服務 */
@@ -42,6 +45,9 @@ export class SearchComponent implements OnInit {
 
   /** 路由器 */
   private router = inject(Router);
+
+  /** DOM Sanitizer - 用於安全地處理 HTML */
+  private sanitizer = inject(DomSanitizer);
 
   /** 搜尋查詢文字 */
   searchQuery = signal<string>('');
@@ -53,7 +59,6 @@ export class SearchComponent implements OnInit {
     // 監聽搜尋查詢變化並計算搜尋延遲
     effect(() => {
       const query = this.searchQuery();
-      console.log('🔍 搜尋查詢變更:', query);
 
       // 在 effect 中計算搜尋延遲（而非在 computed 中）
       if (query.trim()) {
@@ -69,8 +74,7 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('🔎 Search 組件初始化');
-    console.log('📚 可用文檔總數:', this.knowledgeBase.documents().length);
+    // Search 組件初始化完成
   }
 
   /**
@@ -85,9 +89,7 @@ export class SearchComponent implements OnInit {
       return [];
     }
 
-    console.log('🔍 搜尋關鍵字:', query);
     const allDocs = this.knowledgeBase.documents();
-    console.log('📚 可搜尋文檔總數:', allDocs.length);
 
     // 過濾並計算相關性分數
     const results = allDocs
@@ -98,14 +100,6 @@ export class SearchComponent implements OnInit {
       .filter((doc) => doc.relevanceScore > 0)
       .sort((a, b) => b.relevanceScore - a.relevanceScore)
       .slice(0, 50); // 限制最多 50 個結果
-
-    console.log('✅ 找到結果:', results.length, '筆');
-    if (results.length > 0) {
-      console.log('📄 前 3 筆結果:', results.slice(0, 3).map(r => ({
-        title: r.title,
-        score: r.relevanceScore
-      })));
-    }
 
     return results;
   });
@@ -182,14 +176,46 @@ export class SearchComponent implements OnInit {
   }
 
   /**
-   * 高亮搜尋關鍵字
+   * 高亮搜尋關鍵字（防 XSS 和 ReDoS）
+   *
+   * Angular v20 最佳實踐：
+   * 1. 先轉義 HTML 特殊字符（防 XSS）
+   * 2. 轉義正則表達式特殊字符（防 ReDoS）
+   * 3. 使用 DomSanitizer 進行最終消毒
    */
-  highlightText(text: string, query: string): string {
+  highlightText(text: string, query: string): SafeHtml {
     if (!query.trim()) {
-      return text;
+      // 即使是純文字也要轉義
+      return this.escapeHtml(text);
     }
 
-    const regex = new RegExp(`(${query})`, 'gi');
-    return text.replace(regex, '<mark class="highlight">$1</mark>');
+    // 1. 先轉義 HTML（防止 XSS）
+    const escapedText = this.escapeHtml(text);
+
+    // 2. 轉義正則表達式特殊字符（防止 ReDoS）
+    const escapedQuery = this.escapeRegex(query);
+
+    // 3. 進行高亮替換
+    const regex = new RegExp(`(${escapedQuery})`, 'gi');
+    const highlighted = escapedText.replace(regex, '<mark class="highlight">$1</mark>');
+
+    // 4. 使用 DomSanitizer 進行消毒（Angular 20 推薦）
+    return this.sanitizer.sanitize(1, highlighted) || '';
+  }
+
+  /**
+   * 轉義 HTML 特殊字符
+   */
+  private escapeHtml(text: string): string {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  /**
+   * 轉義正則表達式特殊字符
+   */
+  private escapeRegex(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 }

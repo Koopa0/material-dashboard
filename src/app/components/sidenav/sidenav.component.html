@@ -7,29 +7,3 @@
     <app-menu-item [item]="item" [collapseDrawer]="collapseDrawer()" />
   }
 </mat-nav-list>
-
-<!-- Notebooks 區塊 -->
-@if (!collapseDrawer()) {
-  <mat-divider class="my-2"></mat-divider>
-
-  <div class="notebooks-section">
-    <div class="section-header">
-      <mat-icon class="section-icon">auto_stories</mat-icon>
-      <span class="section-title">Notebooks</span>
-    </div>
-
-    <mat-nav-list class="notebooks-list">
-      @for (notebook of notebookService.notebooks(); track notebook.id) {
-        <mat-list-item
-          class="notebook-item"
-          [class.selected]="notebookService.selectedNotebookId() === notebook.id"
-          (click)="notebookService.selectNotebook(notebook.id)"
-        >
-          <mat-icon matListItemIcon [style.color]="notebook.color">{{ notebook.icon }}</mat-icon>
-          <div matListItemTitle>{{ notebook.name }}</div>
-          <div matListItemLine class="doc-count">{{ notebook.documentIds.length }} 文檔</div>
-        </mat-list-item>
-      }
-    </mat-nav-list>
-  </div>
-}

@@ -4,7 +4,7 @@
  * Sprint 4: 提供浮動式 AI 問答助手
  * 用戶可以詢問知識庫相關問題，AI 會根據文檔內容回答
  */
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,6 +35,8 @@ import { CitationComponent } from '../citation/citation';
   ],
   templateUrl: './ai-chat.component.html',
   styleUrl: './ai-chat.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AIChatComponent {
   /** AI 服務 */
