@@ -22,6 +22,25 @@
   margin-bottom: 24px;
 
   .stat-card {
+    cursor: pointer;
+    transition: all var(--transition-base) ease;
+    border: 1px solid transparent;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--color-primary);
+
+      .stat-icon {
+        transform: scale(1.1);
+        filter: brightness(1.2);
+      }
+
+      .stat-info h2 {
+        color: var(--color-primary);
+      }
+    }
+
     mat-card-content {
       padding: 20px;
     }
@@ -35,6 +54,7 @@
         font-size: 48px;
         width: 48px;
         height: 48px;
+        transition: all var(--transition-base) ease;
 
         &.stat-icon-success {
           color: var(--color-success);
@@ -53,6 +73,7 @@
           font-size: 32px;
           font-weight: 600;
           color: var(--color-on-surface);
+          transition: color var(--transition-base) ease;
         }
 
         p {
@@ -234,6 +255,12 @@
 
 // 深色模式的發光效果
 body[data-theme='dark'] {
+  .stats-grid {
+    .stat-card:hover {
+      box-shadow: var(--glow-primary);
+    }
+  }
+
   .pinned-docs,
   .recent-docs {
     .document-item:hover {

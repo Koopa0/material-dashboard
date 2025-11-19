@@ -9,6 +9,7 @@
  */
 import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -38,6 +39,9 @@ import { Document } from '../../models';
 export class SearchComponent implements OnInit {
   /** 知識庫服務 */
   knowledgeBase = inject(KnowledgeBaseService);
+
+  /** 路由器 */
+  private router = inject(Router);
 
   /** 搜尋查詢文字 */
   searchQuery = signal<string>('');
@@ -174,7 +178,7 @@ export class SearchComponent implements OnInit {
   viewDocument(doc: Document): void {
     this.knowledgeBase.selectedDocument.set(doc);
     this.knowledgeBase.recordView(doc.id);
-    console.log('Viewing document from search:', doc);
+    this.router.navigate(['/documents', doc.id]);
   }
 
   /**

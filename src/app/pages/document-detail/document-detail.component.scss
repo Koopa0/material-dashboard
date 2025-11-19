@@ -1,0 +1,404 @@
+/**
+ * 文檔詳細頁面樣式 - Gemini 風格
+ */
+
+.document-detail-page {
+  min-height: 100vh;
+  background: var(--color-background);
+  padding: 0;
+}
+
+// 頂部操作欄
+.document-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  backdrop-filter: blur(8px);
+  background: rgba(var(--color-surface-rgb), 0.95);
+
+  .back-button {
+    color: var(--color-on-surface);
+    transition: all var(--transition-fast) ease;
+
+    &:hover {
+      background: var(--color-surface-hover);
+      transform: translateX(-2px);
+    }
+  }
+
+  .header-spacer {
+    flex: 1;
+  }
+
+  .document-actions {
+    display: flex;
+    gap: 8px;
+
+    .action-button {
+      color: var(--color-text-secondary);
+      transition: all var(--transition-fast) ease;
+
+      &:hover {
+        background: var(--color-surface-hover);
+        color: var(--color-primary);
+        transform: scale(1.1);
+      }
+
+      &.active {
+        color: var(--color-primary);
+
+        mat-icon {
+          animation: bounce 0.3s ease;
+        }
+      }
+    }
+  }
+}
+
+// 文檔主體
+.document-body {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+// 文檔標題區域
+.document-title-section {
+  margin-bottom: 32px;
+
+  .document-title {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--color-on-surface);
+    margin: 0 0 24px 0;
+    line-height: 1.2;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .document-metadata {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+
+    .metadata-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--color-text-secondary);
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: var(--color-primary);
+      }
+    }
+  }
+
+  .document-tags {
+    mat-chip-set {
+      --mdc-chip-container-height: 32px;
+    }
+
+    .tag-chip {
+      background: var(--color-surface-variant);
+      border: 1px solid var(--color-border);
+      transition: all var(--transition-fast) ease;
+
+      &:hover {
+        background: var(--color-primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      mat-icon {
+        color: var(--color-primary);
+      }
+    }
+  }
+}
+
+// 文檔內容卡片
+.document-content-card {
+  margin-bottom: 40px;
+
+  mat-card-content {
+    padding: 40px;
+  }
+
+  .document-content {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--color-on-surface);
+
+    // 段落
+    ::ng-deep p {
+      margin: 0 0 16px 0;
+      text-align: justify;
+    }
+
+    // 標題
+    ::ng-deep h1,
+    ::ng-deep h2,
+    ::ng-deep h3 {
+      margin: 32px 0 16px 0;
+      font-weight: 600;
+      color: var(--color-on-surface);
+      line-height: 1.3;
+    }
+
+    ::ng-deep h1 {
+      font-size: 32px;
+      border-bottom: 2px solid var(--color-border);
+      padding-bottom: 8px;
+    }
+
+    ::ng-deep h2 {
+      font-size: 24px;
+    }
+
+    ::ng-deep h3 {
+      font-size: 20px;
+    }
+
+    // 強調
+    ::ng-deep strong {
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+
+    ::ng-deep em {
+      font-style: italic;
+      color: var(--color-accent);
+    }
+
+    // 代碼
+    ::ng-deep code {
+      padding: 2px 6px;
+      background: var(--color-surface-variant);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+      font-size: 14px;
+      color: var(--color-primary);
+    }
+
+    // 換行
+    ::ng-deep br {
+      display: block;
+      content: '';
+      margin: 8px 0;
+    }
+  }
+}
+
+// 相關文檔區域
+.related-documents-section {
+  margin-top: 48px;
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--color-on-surface);
+    margin-bottom: 24px;
+
+    mat-icon {
+      color: var(--color-primary);
+    }
+  }
+
+  .related-documents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .related-document-card {
+    cursor: pointer;
+    transition: all var(--transition-base) ease;
+    border: 1px solid transparent;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--color-primary);
+
+      .arrow-icon {
+        transform: translateX(4px);
+        color: var(--color-primary);
+      }
+    }
+
+    mat-card-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .related-doc-icon {
+      mat-icon {
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+        color: var(--color-primary);
+      }
+    }
+
+    .related-doc-info {
+      flex: 1;
+      min-width: 0;
+
+      h4 {
+        margin: 0 0 4px 0;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--color-on-surface);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      p {
+        margin: 0 0 6px 0;
+        font-size: 13px;
+        color: var(--color-text-secondary);
+      }
+
+      .related-doc-meta {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        color: var(--color-text-secondary);
+
+        mat-icon {
+          font-size: 14px;
+          width: 14px;
+          height: 14px;
+        }
+      }
+    }
+
+    .arrow-icon {
+      color: var(--color-text-secondary);
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      opacity: 0.6;
+      transition: all var(--transition-fast) ease;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// 文檔不存在
+.document-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  padding: 48px 24px;
+  text-align: center;
+
+  mat-icon {
+    font-size: 96px;
+    width: 96px;
+    height: 96px;
+    color: var(--color-text-secondary);
+    opacity: 0.3;
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--color-on-surface);
+    margin: 0 0 12px 0;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    margin: 0 0 32px 0;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+// 深色模式增強
+body[data-theme='dark'] {
+  .document-content-card {
+    &:hover {
+      box-shadow: var(--glow-primary);
+    }
+  }
+
+  .related-document-card {
+    &:hover {
+      box-shadow: var(--glow-primary);
+    }
+  }
+}
+
+// 動畫
+@keyframes bounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+// 響應式設計
+@media (max-width: 768px) {
+  .document-body {
+    padding: 24px 16px;
+  }
+
+  .document-title-section {
+    .document-title {
+      font-size: 32px;
+    }
+
+    .document-metadata {
+      gap: 12px;
+
+      .metadata-item {
+        font-size: 13px;
+      }
+    }
+  }
+
+  .document-content-card {
+    mat-card-content {
+      padding: 24px 16px;
+    }
+  }
+
+  .related-documents-grid {
+    grid-template-columns: 1fr;
+  }
+}

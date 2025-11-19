@@ -1,0 +1,80 @@
+<!-- 命令面板背景遮罩 -->
+@if (isOpen()) {
+  <div class="command-palette-backdrop" (click)="onBackdropClick()">
+    <!-- 命令面板容器 -->
+    <div class="command-palette" (click)="$event.stopPropagation()">
+      <!-- 搜尋輸入框 -->
+      <div class="command-palette-header">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input
+          type="text"
+          class="command-palette-input"
+          placeholder="輸入命令或搜尋文檔..."
+          [(ngModel)]="searchQuery"
+          (keydown)="onKeyDown($event)"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <div class="keyboard-hint">
+          <kbd>ESC</kbd>
+        </div>
+      </div>
+
+      <!-- 命令列表 -->
+      <div class="command-list">
+        @if (filteredCommands().length === 0) {
+          <div class="empty-state">
+            <mat-icon>search_off</mat-icon>
+            <p>找不到相關命令或文檔</p>
+          </div>
+        } @else {
+          @for (command of filteredCommands(); track command.id; let i = $index) {
+            <div
+              class="command-item"
+              [class.selected]="i === selectedIndex()"
+              (click)="executeCommand(command)"
+              (mouseenter)="selectedIndex.set(i)"
+            >
+              <mat-icon
+                class="command-icon"
+                [style.color]="getTypeColor(command.type)"
+              >
+                {{ command.icon }}
+              </mat-icon>
+              <div class="command-info">
+                <div class="command-label">{{ command.label }}</div>
+                @if (command.description) {
+                  <div class="command-description">{{ command.description }}</div>
+                }
+              </div>
+              @if (i === selectedIndex()) {
+                <div class="command-shortcut">
+                  <kbd>↵</kbd>
+                </div>
+              }
+            </div>
+          }
+        }
+      </div>
+
+      <!-- 底部提示 -->
+      <div class="command-palette-footer">
+        <div class="footer-hint">
+          <span class="hint-item">
+            <kbd>↑</kbd>
+            <kbd>↓</kbd>
+            導航
+          </span>
+          <span class="hint-item">
+            <kbd>↵</kbd>
+            選擇
+          </span>
+          <span class="hint-item">
+            <kbd>ESC</kbd>
+            關閉
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+}
