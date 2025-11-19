@@ -1,4 +1,4 @@
-import { Component, ElementRef, viewChild } from '@angular/core';
+import { Component, ElementRef, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { Chart } from 'chart.js/auto';
 
@@ -7,6 +7,8 @@ import { Chart } from 'chart.js/auto';
   imports: [MatButton],
   templateUrl: './analytics.component.html',
   styleUrl: './analytics.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnalyticsComponent {
   chart = viewChild.required<ElementRef<HTMLCanvasElement>>('chart');

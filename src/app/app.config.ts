@@ -7,14 +7,16 @@
  * - Router 配置（啟用 View Transitions）
  * - 客戶端 Hydration
  * - 動畫支援
+ * - 全局錯誤處理
  */
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, ErrorHandler } from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { GlobalErrorHandler } from './services/global-error-handler.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,6 +33,11 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     provideClientHydration(withEventReplay()),
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    /**
+     * 全局錯誤處理器（Angular v20 最佳實踐）
+     * 捕獲並記錄所有未處理的錯誤
+     */
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
   ]
 };

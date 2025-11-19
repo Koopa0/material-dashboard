@@ -4,7 +4,7 @@
  * 提供 RAG 系統參數配置和數據管理功能
  * 展示 Angular Material 表單元件的使用
  */
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,6 +26,8 @@ import { KnowledgeBaseService } from '../../services/knowledge-base.service';
   ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsComponent {
   /** 知識庫服務 */

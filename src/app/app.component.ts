@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIcon } from '@angular/material/icon';
@@ -24,6 +24,8 @@ import { CommandPaletteComponent } from './components/command-palette/command-pa
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
   title = 'material-dashboard';

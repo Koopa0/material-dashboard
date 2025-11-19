@@ -7,7 +7,7 @@
  * - 搜尋結果高亮
  * - 效能優化
  */
-import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -36,6 +36,8 @@ import { Document } from '../../models';
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchComponent implements OnInit {
   /** 知識庫服務 */

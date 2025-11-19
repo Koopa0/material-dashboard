@@ -4,7 +4,7 @@
  * 顯示單一導航選單項目
  * 使用 Angular v20 input signals
  */
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MenuItem } from '../../models/menu-item.model';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
@@ -24,6 +24,8 @@ import { CommonModule } from '@angular/common';
   ],
   templateUrl: './menu-item.component.html',
   styleUrl: './menu-item.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenuItemComponent {
   /**

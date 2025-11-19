@@ -4,7 +4,7 @@
  * 提供應用程式的主要導航介面
  * 使用 Angular v20 Signals 管理選單項目狀態
  */
-import { Component, input, signal, inject, computed, effect } from '@angular/core';
+import { Component, input, signal, inject, computed, effect, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatListModule, MatNavList } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,6 +33,8 @@ import { Notebook, NotebookColorMap } from '../../models/notebook.model';
   ],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavComponent {
   notebookService = inject(NotebookService);

@@ -1,4 +1,4 @@
-import { Component, inject, signal, Inject } from '@angular/core';
+import { Component, inject, signal, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -36,6 +36,8 @@ export interface NotebookDialogData {
   ],
   templateUrl: './notebook-dialog.component.html',
   styleUrl: './notebook-dialog.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotebookDialogComponent {
   private dialogRef = inject(MatDialogRef<NotebookDialogComponent>);

@@ -4,7 +4,7 @@
  * 提供文檔的CRUD功能和進階表格顯示
  * 展示 Angular CDK Table 和 Signals 的整合使用
  */
-import { Component, inject, computed, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, inject, computed, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
@@ -41,6 +41,8 @@ import { Document, TechnologyCategory, Notebook } from '../../models';
   ],
   templateUrl: './documents.component.html',
   styleUrl: './documents.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocumentsComponent implements AfterViewInit {
   /** 分頁器引用 */

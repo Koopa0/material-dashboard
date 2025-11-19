@@ -9,7 +9,7 @@
  * - 使用 inject() 注入服務
  * - Signal-based reactivity
  */
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,6 +27,8 @@ import { ThemeService } from '../../services/theme.service';
   ],
   templateUrl: './theme-toggle.component.html',
   styleUrl: './theme-toggle.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ThemeToggleComponent {
   /**

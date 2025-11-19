@@ -7,7 +7,7 @@
  * - 使用 afterNextRender 處理 DOM 操作（Chart.js 初始化）
  * - 使用 inject() 進行依賴注入
  */
-import { Component, computed, inject, afterNextRender, ElementRef, viewChild, effect } from '@angular/core';
+import { Component, computed, inject, afterNextRender, ElementRef, viewChild, effect, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
@@ -27,6 +27,8 @@ Chart.register(...registerables);
   ],
   templateUrl: './analytics.component.html',
   styleUrl: './analytics.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AnalyticsComponent {
   /**

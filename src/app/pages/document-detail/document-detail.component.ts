@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, signal, inject, effect } from '@angular/core';
+import { Component, OnInit, computed, signal, inject, effect, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -24,6 +24,8 @@ import { Document } from '../../models/document.model';
   ],
   templateUrl: './document-detail.component.html',
   styleUrl: './document-detail.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocumentDetailComponent {
   private route = inject(ActivatedRoute);

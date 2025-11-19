@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Widget } from '../../models/dashboard';
 import { NgComponentOutlet } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
@@ -15,6 +15,8 @@ import { OptionsComponent } from './options/options.component';
       '"span " + (data().rows ?? 1) + "/ span " + (data().columns ?? 1)',
     class: 'block rounded-2xl',
   },
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WidgetComponent {
   data = input.required<Widget>();

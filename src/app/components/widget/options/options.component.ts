@@ -1,4 +1,4 @@
-import { Component, inject, input, model } from '@angular/core';
+import { Component, inject, input, model, ChangeDetectionStrategy } from '@angular/core';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -10,6 +10,8 @@ import { DashboardService } from '../../../services/dashboard.service';
   imports: [MatButtonModule, MatIcon, MatButtonToggleModule],
   templateUrl: './options.component.html',
   styleUrl: './options.component.scss',
+  // Angular v20 性能優化：使用 OnPush 變更檢測策略
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OptionsComponent {
   dashboardService = inject(DashboardService);
