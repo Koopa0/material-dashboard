@@ -16,9 +16,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 import { FormsModule } from '@angular/forms';
 import { KnowledgeBaseService } from '../../services/knowledge-base.service';
-import { Document, TechnologyCategory } from '../../models';
+import { NotebookService } from '../../services/notebook.service';
+import { Document, TechnologyCategory, Notebook } from '../../models';
 
 @Component({
   selector: 'app-documents',
@@ -34,6 +36,7 @@ import { Document, TechnologyCategory } from '../../models';
     MatSelectModule,
     MatPaginatorModule,
     MatTooltipModule,
+    MatMenuModule,
     FormsModule,
   ],
   templateUrl: './documents.component.html',
@@ -45,6 +48,9 @@ export class DocumentsComponent implements AfterViewInit {
 
   /** 知識庫服務 */
   knowledgeBase = inject(KnowledgeBaseService);
+
+  /** Notebook 服務 */
+  notebookService = inject(NotebookService);
 
   /** 路由器 */
   private router = inject(Router);
@@ -140,5 +146,17 @@ export class DocumentsComponent implements AfterViewInit {
     this.knowledgeBase.setPageSize(event.pageSize);
     console.log('Current page after change:', this.knowledgeBase.currentPage());
     console.log('Documents count:', this.documents().length);
+  }
+
+  /**
+   * 將文檔加入 Notebook
+   */
+  addToNotebook(doc: Document, notebook: Notebook): void {
+    const success = this.notebookService.addDocumentToNotebook(notebook.id, doc.id);
+    if (success) {
+      console.log(`✅ 已將「${doc.title}」加入「${notebook.name}」`);
+    } else {
+      console.log(`⚠️「${doc.title}」已在「${notebook.name}」中`);
+    }
   }
 }
