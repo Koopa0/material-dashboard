@@ -1,0 +1,54 @@
+<div class="home-container">
+  <div class="home-header">
+    <h1>📚 My Knowledge Base</h1>
+    <p class="subtitle">Notion + NotebookLM Inspired System</p>
+  </div>
+
+  <div class="actions-bar">
+    <button mat-raised-button color="primary" (click)="createNewPage()">
+      <mat-icon>add</mat-icon>
+      New Page
+    </button>
+  </div>
+
+  <div class="pages-grid">
+    @for (page of pages(); track page.id) {
+      <mat-card class="page-card" (click)="openPage(page.id)">
+        <mat-card-content>
+          <div class="page-icon">
+            @if (page.icon?.type === 'emoji') {
+              {{ page.icon.emoji }}
+            } @else {
+              📄
+            }
+          </div>
+
+          <h3 class="page-title">{{ page.title || 'Untitled' }}</h3>
+
+          <div class="page-meta">
+            <span class="page-date">
+              <mat-icon>schedule</mat-icon>
+              {{ formatDate(page.updatedAt) }}
+            </span>
+            <span class="page-blocks">
+              <mat-icon>subject</mat-icon>
+              {{ page.blocks.length }} blocks
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    @if (pages().length === 0) {
+      <div class="empty-state">
+        <mat-icon>description</mat-icon>
+        <h2>No pages yet</h2>
+        <p>Create your first page to get started!</p>
+        <button mat-raised-button color="primary" (click)="createNewPage()">
+          <mat-icon>add</mat-icon>
+          Create First Page
+        </button>
+      </div>
+    }
+  </div>
+</div>

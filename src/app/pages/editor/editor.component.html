@@ -1,0 +1,299 @@
+<div class="editor-container">
+  <!-- Header -->
+  <div class="editor-header">
+    <button mat-icon-button (click)="navigateToHome()" matTooltip="Back to home">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span class="spacer"></span>
+    <button mat-icon-button matTooltip="Share">
+      <mat-icon>share</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="More options" [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+  </div>
+
+  <!-- Page Content -->
+  @if (page(); as currentPage) {
+    <div class="page-content">
+      <!-- Cover (if exists) -->
+      @if (currentPage.cover) {
+        <div class="page-cover" [style.background]="
+          currentPage.cover.type === 'gradient'
+            ? currentPage.cover.gradient
+            : 'url(' + (currentPage.cover.external?.url || currentPage.cover.file?.url) + ')'
+        "></div>
+      }
+
+      <!-- Icon & Title -->
+      <div class="page-header">
+        @if (currentPage.icon) {
+          <div class="page-icon">
+            @if (currentPage.icon.type === 'emoji') {
+              {{ currentPage.icon.emoji }}
+            }
+          </div>
+        }
+
+        <h1
+          class="page-title"
+          contenteditable="true"
+          (blur)="updateTitle($any($event.target).textContent)"
+          [textContent]="currentPage.title"
+          placeholder="Untitled"
+        ></h1>
+      </div>
+
+      <!-- Blocks -->
+      <div class="blocks-container">
+        @for (block of blocks(); track block.id) {
+          <div class="block-wrapper" [attr.data-block-id]="block.id">
+            <!-- Text Block -->
+            @if (block.type === BlockType.TEXT) {
+              <div
+                class="block block-text"
+                contenteditable="true"
+                (input)="handleInput($event, block.id)"
+                (keydown)="handleKeyDown($event, block.id)"
+                [textContent]="getBlockContent(block)"
+                placeholder="Type '/' for commands..."
+              ></div>
+            }
+
+            <!-- Heading Blocks -->
+            @if (block.type === BlockType.HEADING_1) {
+              <h1
+                class="block block-heading-1"
+                contenteditable="true"
+                (input)="handleInput($event, block.id)"
+                (keydown)="handleKeyDown($event, block.id)"
+                [textContent]="getBlockContent(block)"
+                placeholder="Heading 1"
+              ></h1>
+            }
+
+            @if (block.type === BlockType.HEADING_2) {
+              <h2
+                class="block block-heading-2"
+                contenteditable="true"
+                (input)="handleInput($event, block.id)"
+                (keydown)="handleKeyDown($event, block.id)"
+                [textContent]="getBlockContent(block)"
+                placeholder="Heading 2"
+              ></h2>
+            }
+
+            @if (block.type === BlockType.HEADING_3) {
+              <h3
+                class="block block-heading-3"
+                contenteditable="true"
+                (input)="handleInput($event, block.id)"
+                (keydown)="handleKeyDown($event, block.id)"
+                [textContent]="getBlockContent(block)"
+                placeholder="Heading 3"
+              ></h3>
+            }
+
+            <!-- List Blocks -->
+            @if (block.type === BlockType.BULLETED_LIST) {
+              <div class="block block-list">
+                <span class="list-marker">•</span>
+                <div
+                  class="list-content"
+                  contenteditable="true"
+                  (input)="handleInput($event, block.id)"
+                  (keydown)="handleKeyDown($event, block.id)"
+                  [textContent]="getBlockContent(block)"
+                  placeholder="List item"
+                ></div>
+              </div>
+            }
+
+            @if (block.type === BlockType.NUMBERED_LIST) {
+              <div class="block block-list">
+                <span class="list-marker">1.</span>
+                <div
+                  class="list-content"
+                  contenteditable="true"
+                  (input)="handleInput($event, block.id)"
+                  (keydown)="handleKeyDown($event, block.id)"
+                  [textContent]="getBlockContent(block)"
+                  placeholder="List item"
+                ></div>
+              </div>
+            }
+
+            <!-- TODO Block -->
+            @if (block.type === BlockType.TODO) {
+              <div class="block block-todo">
+                <mat-icon class="todo-checkbox">
+                  {{ block.content.todo?.checked ? 'check_box' : 'check_box_outline_blank' }}
+                </mat-icon>
+                <div
+                  class="todo-content"
+                  contenteditable="true"
+                  (input)="handleInput($event, block.id)"
+                  (keydown)="handleKeyDown($event, block.id)"
+                  [textContent]="getBlockContent(block)"
+                  placeholder="To-do"
+                ></div>
+              </div>
+            }
+
+            <!-- Quote Block -->
+            @if (block.type === BlockType.QUOTE) {
+              <blockquote
+                class="block block-quote"
+                contenteditable="true"
+                (input)="handleInput($event, block.id)"
+                (keydown)="handleKeyDown($event, block.id)"
+                [textContent]="getBlockContent(block)"
+                placeholder="Quote"
+              ></blockquote>
+            }
+
+            <!-- Code Block -->
+            @if (block.type === BlockType.CODE) {
+              <pre
+                class="block block-code"
+                contenteditable="true"
+                (input)="handleInput($event, block.id)"
+                (keydown)="handleKeyDown($event, block.id)"
+                [textContent]="getBlockContent(block)"
+                placeholder="Code"
+              ></pre>
+            }
+
+            <!-- Callout Block -->
+            @if (block.type === BlockType.CALLOUT) {
+              <div class="block block-callout">
+                <div class="callout-icon">
+                  {{ block.content.callout?.icon?.emoji || '💡' }}
+                </div>
+                <div
+                  class="callout-content"
+                  contenteditable="true"
+                  (input)="handleInput($event, block.id)"
+                  (keydown)="handleKeyDown($event, block.id)"
+                  [textContent]="getBlockContent(block)"
+                  placeholder="Callout"
+                ></div>
+              </div>
+            }
+
+            <!-- Divider Block -->
+            @if (block.type === BlockType.DIVIDER) {
+              <hr class="block block-divider" />
+            }
+
+            <!-- Block Actions (on hover) -->
+            <div class="block-actions">
+              <button mat-icon-button [matMenuTriggerFor]="blockMenu" class="block-action-btn">
+                <mat-icon>drag_indicator</mat-icon>
+              </button>
+
+              <mat-menu #blockMenu="matMenu">
+                <button mat-menu-item (click)="deleteBlock(block.id)">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>content_copy</mat-icon>
+                  <span>Duplicate</span>
+                </button>
+                <button mat-menu-item [matMenuTriggerFor]="convertMenu">
+                  <mat-icon>transform</mat-icon>
+                  <span>Turn into</span>
+                </button>
+              </mat-menu>
+
+              <mat-menu #convertMenu="matMenu">
+                <button mat-menu-item (click)="convertBlockType(block.id, BlockType.TEXT)">
+                  <mat-icon>subject</mat-icon>
+                  <span>Text</span>
+                </button>
+                <button mat-menu-item (click)="convertBlockType(block.id, BlockType.HEADING_1)">
+                  <mat-icon>title</mat-icon>
+                  <span>Heading 1</span>
+                </button>
+                <button mat-menu-item (click)="convertBlockType(block.id, BlockType.HEADING_2)">
+                  <mat-icon>title</mat-icon>
+                  <span>Heading 2</span>
+                </button>
+                <button mat-menu-item (click)="convertBlockType(block.id, BlockType.BULLETED_LIST)">
+                  <mat-icon>format_list_bulleted</mat-icon>
+                  <span>Bulleted List</span>
+                </button>
+                <button mat-menu-item (click)="convertBlockType(block.id, BlockType.TODO)">
+                  <mat-icon>check_box</mat-icon>
+                  <span>To-do</span>
+                </button>
+              </mat-menu>
+            </div>
+          </div>
+        }
+
+        <!-- Add Block Button -->
+        <button mat-button class="add-block-btn" (click)="addBlock(BlockType.TEXT)">
+          <mat-icon>add</mat-icon>
+          Click to add a block, or type '/' for commands
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <mat-icon>description</mat-icon>
+      <p>Page not found</p>
+      <button mat-raised-button color="primary" (click)="navigateToHome()">
+        Go to Home
+      </button>
+    </div>
+  }
+
+  <!-- Slash Command Menu -->
+  @if (showSlashMenu()) {
+    <div
+      class="slash-menu"
+      [style.top.px]="slashMenuPosition().top"
+      [style.left.px]="slashMenuPosition().left"
+    >
+      <div class="slash-menu-header">
+        <mat-icon>bolt</mat-icon>
+        <span>BASIC BLOCKS</span>
+      </div>
+      @for (config of filteredBlockConfigs(); track config.type) {
+        <button
+          class="slash-menu-item"
+          (click)="selectSlashCommand(config.type, blocks()[blocks().length - 1]?.id)"
+        >
+          <mat-icon>{{ config.icon }}</mat-icon>
+          <div class="slash-menu-item-content">
+            <div class="slash-menu-item-label">{{ config.label }}</div>
+            @if (config.description) {
+              <div class="slash-menu-item-description">{{ config.description }}</div>
+            }
+          </div>
+          @if (config.shortcut) {
+            <div class="slash-menu-item-shortcut">{{ config.shortcut }}</div>
+          }
+        </button>
+      }
+    </div>
+  }
+
+  <!-- Options Menu -->
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>content_copy</mat-icon>
+      <span>Duplicate</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>delete</mat-icon>
+      <span>Delete</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>import_export</mat-icon>
+      <span>Export</span>
+    </button>
+  </mat-menu>
+</div>

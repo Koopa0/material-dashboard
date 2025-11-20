@@ -1,10 +1,12 @@
 /**
  * 應用程式路由配置
  *
- * RAG 知識庫管理系統的路由定義
+ * Notion + NotebookLM 混合知識管理系統
  * 使用 Angular v20 standalone components
  */
 import { Routes } from '@angular/router';
+import { HomeComponent } from './pages/home/home.component';
+import { EditorComponent } from './pages/editor/editor.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { DocumentDetailComponent } from './pages/document-detail/document-detail.component';
 import { NotebooksComponent } from './pages/notebooks/notebooks';
@@ -16,8 +18,13 @@ import { SettingsComponent } from './pages/settings/settings.component';
 export const routes: Routes = [
   {
     path: '',
-    pathMatch: 'full',
-    redirectTo: 'dashboard',
+    component: HomeComponent,
+    title: 'Home - Knowledge Base',
+  },
+  {
+    path: 'editor/:id',
+    component: EditorComponent,
+    title: 'Editor - Knowledge Base',
   },
   {
     path: 'dashboard',
